@@ -1,0 +1,54 @@
+﻿@page "/"
+@inject HttpClient Http
+@using System.Threading
+    <head>
+        ...
+        <link href="_content/DevExpress.Blazor/dx-blazor.css" rel="stylesheet" />
+    </head>
+<br />
+<p class="h5 mt-5">Bienvenido</p>
+<ComboDeposito DepositoSeleccionado="@SelectedDepositoSalida"></ComboDeposito>
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+@*<DxComboBox DataAsync="@GetDataAsync"
+            TextFieldName="DES_DEP"
+            SelectedItem="@SelectedDepositoSalida">
+</DxComboBox>*@
+
+@code {
+    private Deposito selectedDepositoSalida = null;
+    Deposito SelectedDepositoSalida
+    {
+        get => selectedDepositoSalida;
+        set { selectedDepositoSalida = value; InvokeAsync(StateHasChanged); }
+    }
+
+    private Deposito selectedDepositoIngreso = null;
+    Deposito SelectedDepositoIngreso
+    {
+        get => selectedDepositoIngreso;
+        set { selectedDepositoIngreso = value; InvokeAsync(StateHasChanged); }
+    }
+    IEnumerable<Deposito> Depositos = new List<Deposito>();
+    protected override async Task OnInitializedAsync()
+    {
+        Depositos = await Http.GetFromJsonAsync<IEnumerable<Deposito>>("api/Depositos");
+        selectedDepositoSalida = Depositos.FirstOrDefault();
+        selectedDepositoIngreso = Depositos.FirstOrDefault();
+
+        await InvokeAsync(StateHasChanged);
+        Console.WriteLine("OnInitializedAsync");
+    }
+
+    public Task<IEnumerable<Deposito>> GetDataAsync(CancellationToken ct = default)
+    {
+        return Task.FromResult(Depositos);
+    }
+
+    void itemChanged(Deposito deposito)
+    {
+        selectedDepositoSalida = deposito;
+        //CurrentCountryCities = Cities.FindAll(city => city.CountryId == CurrentCountry.Id);
+        //CurrentCity = CurrentCountryCities[0];
+    }
+}

@@ -1,0 +1,474 @@
+﻿@page "/opestock"
+@inject IJSRuntime JsRuntime
+@inject HttpClient Http
+@using Newtonsoft.Json
+<head>
+    ...
+    <link href="_content/DevExpress.Blazor/dx-blazor.css" rel="stylesheet" />
+</head>
+<div class="form-inline">
+    <h4 class="mt-5 text-left">
+        Operaciones de Stock a Realizar
+        <small class="text-info"> <strong>@SelectedTire?.Descrip</strong></small>
+    </h4>
+    @*<DxToolbar AdaptivityAutoCollapseItemsToIcons="true" CssClass="mt-4">
+        <Items>
+            <DxToolbarItem Text="Info" RenderStyle="ButtonRenderStyle.Info" Alignment="ToolbarItemAlignment.Right" />
+            <DxToolbarItem Text="Imprimir" RenderStyle="ButtonRenderStyle.Success" Alignment="ToolbarItemAlignment.Right" />
+            <DxToolbarItem IconCssClass="tb-icon tb-icon-alert" BeginGroup="true" RenderStyle="ButtonRenderStyle.Danger" Text="Eliminar" Alignment="ToolbarItemAlignment.Right" />
+            <DxToolbarItem IconCssClass="tb-icon tb-icon-alert" Text="Nuevo" Alignment="ToolbarItemAlignment.Right" />
+            <DxToolbarItem IconCssClass="tb-icon tb-icon-alert" RenderStyle="ButtonRenderStyle.Warning" Text="Warning" Alignment="ToolbarItemAlignment.Right" />
+        </Items>
+    </DxToolbar>*@
+
+</div>
+<hr />
+<DxFormLayout>
+    @*SELECCION DE TIPO DE REMITO*@
+    <DxFormLayoutItem Caption="Operaciones de Stock:" ColSpanLg="6" ColSpanMd="4">
+        <Template>
+            <DxComboBox NullText="Seleccione una opcion..."
+                        Data="@Tipos"
+                        TextFieldName="Descrip"
+                        SelectedItem="@SelectedTire"
+                        SelectedItemChanged="@SelectedTireChanged">
+            </DxComboBox>
+        </Template>
+    </DxFormLayoutItem>
+    <DxFormLayoutItem Caption="Orden de Fabriciòn" ColSpanMd="3" ColSpanXs="6">
+        <Template>
+            <div class="form-row">
+                <div class="col-10">
+                    <DxSpinEdit @bind-Value="@OrdenFabricacion" ShowSpinButtons="false"></DxSpinEdit>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-outline-info btn-sm"
+                            disabled="@DisableCssClass">
+                        ...
+                    </button>
+                </div>
+            </div>
+        </Template>
+    </DxFormLayoutItem>
+    @*BUSCAR OF*@
+    <DxFormLayoutItem Caption="Orden de Compra:" ColSpanMd="3" ColSpanXs="6">
+        <Template>
+            <div class="form-row">
+                <div class="col-10">
+                    <DxSpinEdit @bind-Value="@OCompra" ShowSpinButtons="false"></DxSpinEdit>
+
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-outline-info btn-sm"
+                            disabled="@DisableCssClass">
+                        ...
+                    </button>
+
+                </div>
+            </div>
+        </Template>
+    </DxFormLayoutItem>
+
+    @*ABRIR O BUSCAR VALES*@
+    <DxFormLayoutItem Caption="Numero de Vale:" ColSpanMd="3" ColSpanXs="6">
+        <Template>
+            <div class="form-row">
+                <div class="col-10">
+                    <DxSpinEdit @bind-Value="@NumVale"></DxSpinEdit>
+
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-outline-info btn-sm"
+                            disabled="@DisableCssClass"
+                            @onclick="AbrirVale">
+                        ...
+                    </button>
+
+                </div>
+
+            </div>
+        </Template>
+    </DxFormLayoutItem>
+    <DxFormLayoutItem Caption="Fecha:" ColSpanMd="3" ColSpanXs="6">
+        <Template>
+            <div class="form-row">
+                <div class="col-12">
+                    <DxDateEdit @bind-Date="@Fecha" Format="dd/MM/yyyy"></DxDateEdit>
+                </div>
+            </div>
+        </Template>
+    </DxFormLayoutItem>
+    <DxFormLayoutItem Caption="Pedido:" ColSpanMd="3" ColSpanXs="12">
+        <Template>
+            <div class="form-row">
+                <div class="col-10">
+                    <DxSpinEdit @bind-Value="@Pedido"></DxSpinEdit>
+
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-outline-info btn-sm"
+                            disabled="@DisableCssClass">
+                        ...
+                    </button>
+
+                </div>
+            </div>
+        </Template>
+    </DxFormLayoutItem>
+    @*DEPOSITOS*@
+    <DxFormLayoutItem Caption="Deposito de Salida:" ColSpanMd="6">
+        <Template>
+            
+            <DxComboBox NullText="Seleccione un Deposito..."
+                        Data="@Depositos"
+                        TextFieldName="DES_DEP"
+                        @bind-SelectedItem="@SelectedDepositoSalida">
+            </DxComboBox>
+        </Template>
+    </DxFormLayoutItem>
+    <DxFormLayoutItem Caption="Deposito de Ingreso:" ColSpanMd="6">
+        <Template>
+            <DxComboBox NullText="Seleccione un Deposito..."
+                        Data="@Depositos"
+                        TextFieldName="DES_DEP"
+                        @bind-SelectedItem="@SelectedDepositoIngreso">
+            </DxComboBox>
+
+        </Template>
+    </DxFormLayoutItem>
+    <DxFormLayoutItem Caption="Cliente/Proveedor" ColSpanXl="9" ColSpanMd="6" ColSpanSm="12">
+        <Template>
+            <div class="form-row">
+                <div class="col-3">
+                    <DxSpinEdit @bind-Value="@Cg_CLI_Cg_PROVE"
+                                ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto">
+                    </DxSpinEdit>
+
+                </div>
+                <div class="col-7">
+                    <DxTextBox @bind-Text="@DescripcionPro" CssClass="ml-1"
+                               ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto"></DxTextBox>
+
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-outline-secondary btn-sm">
+                        Buscar
+                    </button>
+
+                </div>
+            </div>
+        </Template>
+    </DxFormLayoutItem>
+    <DxFormLayoutItem Caption="Remito:" ColSpanLg="3" ColSpanMd="6" ColSpanSm="12">
+        <Template>
+            <div class="form-row">
+                <div class="col">
+
+                    <DxTextBox @bind-Text="@Remito" Id="remito" CssClass=""
+                               ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto">
+                    </DxTextBox>
+
+                </div>
+            </div>
+
+        </Template>
+    </DxFormLayoutItem>
+</DxFormLayout>
+@*<ComboDeposito DepositoSeleccionado="@selectedDepositoSalida"></ComboDeposito>
+<ComboDeposito DepositoSeleccionado="@selectedDepositoIngreso"></ComboDeposito>*@
+<div class="container-fluid">
+    <GridEditStock DataSource="@ItemsVale" PermiteAgregar="@PermiteAgregarItem"
+                   PermiteEditar="@PermiteEditarItem" PermiteEliminar="@PermiteEliminarItem"
+                   onGuardar="onGuardarPedido" />
+</div>
+
+<BuscadorEmergente Titulo=@tituloBuscador Visible="@PopupBuscadorVisible" DataSource="@ItemsABuscar"
+                   Columnas="@ColumnasBuscador" onObjetoSeleccionado="onObjectSelected" />
+
+@code {
+    int cg_cia = 1;
+    bool DisableCssClass { get => selectedTire == null ? true : false; }
+    int NumVale { get; set; }
+
+    Producto[] Productos = null;
+    Deposito[] Depositos = null;
+    Pedidos[] ItemsVale = null;
+    bool PermiteAgregarItem { get; set; } = false;
+    bool PermiteEditarItem { get; set; } = false;
+    bool PermiteEliminarItem { get; set; } = false;
+
+
+    List<Tire> Tipos = new List<Tire>() {
+    new Tire() { Id = 10, Descrip = "Entrega de un insumo a una orden de fabricación" },
+    new Tire() { Id = 10, Descrip = "Devolución de un insumo de una orden de fabricación" },
+    new Tire() { Id = 28, Descrip = "Entrega de un insumo a una orden de armado" },/*tipo 28 = order de armado y tipo 10  10 OF*/
+    new Tire() { Id = 28, Descrip = "Devolución de un insumo de una orden de armado" },
+    new Tire() { Id = 2, Descrip = "Entrega de consumibles" }, /**/
+    new Tire() { Id = 5, Descrip = "Recepción de un insumo de un proveedor" }, /*Tipo 5 Recepcion y tipo 6 devolucion: */
+    new Tire() { Id = 6, Descrip = "Devolución de un insumo a un proveedor" },
+    new Tire() { Id = 14, Descrip = "Envío de un insumo o producto a scrap" }, /*TIPO 14 ENTREGA A SCRAP TIPO 15 DESTRUCCION DE SCRAP(NO PROGRAMADO) TIPO 16 DEVOLUCION DE SCRAP*/
+    new Tire() { Id = 15, Descrip = "Recuperación de un insumo o producto de scrap" },
+    new Tire() { Id = 9, Descrip = "Movimientos entre depósitos" }, /*TIPO 9*/
+    new Tire() { Id = 1, Descrip = "Entrega a un cliente con y sin pedido" }, /*TIPO 1*/
+    new Tire() { Id = 1, Descrip = "Devolución de un cliente con y sin pedido" }
+    };
+
+    Producto selectedProducto;
+    public Producto SelectedProducto
+    {
+        get { return selectedProducto; }
+        set
+        {
+            selectedProducto = value;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    #region "CABACERA VALE"
+    private Tire selectedTire = null;
+    Tire SelectedTire
+    {
+        get => selectedTire;
+        set { selectedTire = value; InvokeAsync(StateHasChanged); }
+    }
+
+    private int OrdenFabricacion { get; set; } = 0;
+    private int Pedido { get; set; } = 0;
+    private int Cg_CLI_Cg_PROVE { get; set; } = 0;
+    private int OCompra { get; set; } = 0;
+    private string Remito { get; set; } = "";
+    private DateTime fecha = DateTime.Now;
+    DateTime Fecha { get => fecha; set { fecha = value; InvokeAsync(StateHasChanged); } }
+    string Codigoi { get; set; } = "";
+    string DescripcionPro { get; set; } = "";
+
+    private Deposito selectedDepositoSalida = null;
+    Deposito SelectedDepositoSalida
+    {
+        get => selectedDepositoSalida;
+        set { selectedDepositoSalida = value; InvokeAsync(StateHasChanged); }
+    }
+
+    private Deposito selectedDepositoIngreso = null;
+    Deposito SelectedDepositoIngreso
+    {
+        get => selectedDepositoIngreso;
+        set { selectedDepositoIngreso = value; InvokeAsync(StateHasChanged); }
+    }
+
+    #endregion
+
+    void OnChanged() { InvokeAsync(StateHasChanged); }
+
+    protected override void OnInitialized()
+    {
+
+
+        Console.WriteLine("OnInitialized");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        NumVale = await Http.GetFromJsonAsync<int>($"api/Stock/GetMaxVale");
+        Depositos = await Http.GetFromJsonAsync<Deposito[]>("api/Depositos");
+        selectedDepositoSalida = Depositos[2];
+        selectedDepositoIngreso = Depositos[2];
+
+        SelectedDepositoSalida = Depositos[2];
+        SelectedDepositoIngreso = Depositos[2];
+
+        await InvokeAsync(StateHasChanged);
+        Console.WriteLine("OnInitializedAsync");
+
+
+        ItemsVale = new List<Pedidos>().ToArray();
+        //ItemsVale = await Http.GetFromJsonAsync<Pedidos[]>($"api/Stock/AbriVale/-1");
+
+    }
+
+    void SelectedTireChanged(Tire tire)
+    {
+        selectedTire = tire;
+        //Dependiendo el tire Habilitar controles
+        if (selectedTire?.Id > 0)
+        {
+            PermiteAgregarItem = true;
+        }
+        else
+        {
+            PermiteAgregarItem = false;
+        }
+        InvokeAsync(StateHasChanged);
+    }
+
+    void itemChanged(Deposito deposito)
+    {
+        selectedDepositoSalida = deposito;
+    }
+
+    void CargarVale()
+    {
+        NumVale = (int)ItemsVale[0].VALE;
+        Fecha = ItemsVale[0].FE_MOV;
+        //depos: ver cual campo es ingreso y salida: tal vez depende segun el tipo de operacion
+
+        selectedDepositoIngreso = Depositos.Where(d => d.CG_DEP == ItemsVale[0].CG_DEP).FirstOrDefault();
+
+
+
+        OrdenFabricacion = (int)ItemsVale[0].CG_ORDF;
+        OCompra = (int)ItemsVale[0].OCOMPRA;
+        Pedido = (int)ItemsVale[0].PEDIDO;
+        Cg_CLI_Cg_PROVE = ItemsVale[0].CG_CLI == 0 ? ItemsVale[0].CG_PROVE : ItemsVale[0].CG_CLI;
+        DescripcionPro = ItemsVale[0].CG_CLI == 0 ? "Proveedor" : "Cliente";
+        Remito = ItemsVale[0].REMITO;
+        PermiteAgregarItem = true;
+        PermiteEditarItem = true;
+        PermiteEliminarItem = true;
+        InvokeAsync(StateHasChanged);
+    }
+
+    #region "BUSCADOR EMERGENTE"
+    string tituloBuscador { get; set; } = "";
+    private bool popupVisible = false;
+    bool PopupVisible { get => popupVisible; set { popupVisible = value; InvokeAsync(StateHasChanged); } }
+
+    private async Task onGuardarPedido(Pedidos pedidos)
+    {
+        pedidos.FE_MOV = DateTime.Now;
+        pedidos.VALE = NumVale;
+        pedidos.REMITO = Remito;
+        pedidos.CG_PROVE = Cg_CLI_Cg_PROVE;
+        pedidos.AVISO = "";
+        pedidos.CG_ORDF = 0;
+        pedidos.OCOMPRA = OCompra;
+        pedidos.CG_DEP = selectedDepositoIngreso.CG_DEP;
+        pedidos.VOUCHER = 0;
+        pedidos.TIPOO = selectedTire.Id;
+        pedidos.AVISO = "RECEPCION DE INSUMOS DE PROVEEDOR"; /*VERIFICAR TIPOO*/
+        pedidos.CAMPANA = "";
+        pedidos.CG_ART1 = "";
+        pedidos.DES_ART1 = "";
+        pedidos.CG_BARRAS = "";
+        pedidos.CG_COMP = 0;
+        pedidos.CG_COND = "";
+        pedidos.CG_POSTA = "";
+        pedidos.CG_ZONA = "";
+        pedidos.COMPROB = "";
+        pedidos.CONDVEN = "";
+        pedidos.CONDVENEX = "";
+        pedidos.CONVMON = "";
+        pedidos.CUIT = "";
+        pedidos.DES_CLI = "";
+        pedidos.DIRECC = "";
+        pedidos.DIRENT = "";
+        pedidos.FACTURA = "";
+        pedidos.IMPRESO = "";
+        pedidos.LEYENDA = "";
+        pedidos.LOCALIDAD = "";
+        pedidos.MONEDA = "";
+        pedidos.OBS1 = "";
+        pedidos.OBS2 = "";
+        pedidos.OBS3 = "";
+        pedidos.OBS4 = "";
+        pedidos.OBSERITEM = "";
+        pedidos.OBSERVACIONES = "";
+        pedidos.ORCO = "";
+        pedidos.PALLET = "";
+        pedidos.POSARAN = "";
+        pedidos.TIPO_FAC_AGRO = "";
+        pedidos.UBICACION = "";
+        pedidos.UNIDA = "";
+        pedidos.FE_FAC = DateTime.UtcNow;
+        pedidos.ENTRREAL = DateTime.UtcNow;
+        var response = await Http.PostAsJsonAsync("api/Stock", pedidos);
+
+        await AbrirVale();
+
+    }
+
+    private async Task onObjectSelected(object obj)
+    {
+        PopupBuscadorVisible = false;
+        var tipoEntidad = obj.GetType().Name;
+        if (tipoEntidad == "Pedidos")
+        {
+            var pedido = (Pedidos)obj;
+            //Get items del vale
+            var vale = pedido.VALE;
+            ItemsVale = await Http.GetFromJsonAsync<Pedidos[]>($"api/Stock/AbriVale/{pedido.VALE}");
+
+            if (ItemsVale != null || ItemsVale.Length > 0)
+            {
+                CargarVale();
+            }
+
+        }
+
+        if (tipoEntidad == "Producto")
+        {
+            selectedProducto = (Producto)obj;
+            Codigoi = selectedProducto.CG_PROD;
+            DescripcionPro = selectedProducto.DES_PROD;
+        }
+    }
+
+    #endregion
+
+    #region "BUSCAR VALES"
+
+    private bool popupBuscadorVisible = false;
+    bool PopupBuscadorVisible { get => popupBuscadorVisible; set { popupBuscadorVisible = value; InvokeAsync(StateHasChanged); } }
+    string[] ColumnasBuscador = null; /*{ "VALE", "FE_MOV", "CG_ART", "DES_ART", "DESPACHO", "LOTE", "SERIE" };*/
+    object[] ItemsABuscar;
+
+    protected async Task AbrirVale()
+    {
+
+        var vale = NumVale;
+        ItemsVale = await Http.GetFromJsonAsync<Pedidos[]>($"api/Stock/AbriVale/{vale}");
+
+        if (ItemsVale == null || ItemsVale.Length == 0)
+        {
+            await BuscarVales();
+        }
+        else
+        {
+            CargarVale();
+        }
+    }
+
+    protected async Task BuscarVales()
+    {
+        ItemsABuscar = null;
+        tituloBuscador = $"Listado de Vales";
+        ColumnasBuscador = new string[] { "VALE", "FE_MOV", "CG_ART", "DES_ART" };
+        var tipoo = SelectedTire.Id;
+        ItemsABuscar = await Http.GetFromJsonAsync<Pedidos[]>($"api/Stock/GetValesByTipo/{tipoo}");
+        if (ItemsABuscar == null)
+        {
+            ItemsABuscar = new List<Pedidos>().ToArray();
+        }
+        PopupBuscadorVisible = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    #endregion
+
+    #region "BUSCAR CLIENTE"
+    protected async Task BuscarProductos()
+    {
+        ItemsABuscar = null;
+        tituloBuscador = "Listado de Clientes";
+        ColumnasBuscador = new string[] { "CG_CLI", "DES_CLI" };
+        ItemsABuscar = await Http.GetFromJsonAsync<Producto[]>("api/Productos");
+        PopupBuscadorVisible = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    #endregion
+
+
+
+
+}

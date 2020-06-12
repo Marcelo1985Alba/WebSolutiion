@@ -1,0 +1,207 @@
+﻿@page "/cliente"
+@using PCP.Shared.Models
+@using System.Data
+@using DevExpress.Blazor
+@inject IJSRuntime JsRuntime
+@inject HttpClient Http
+    <head>
+        ...
+        <link href="_content/DevExpress.Blazor/dx-blazor.css" rel="stylesheet" />
+    </head>
+
+<h3 class="mt-5">Listado de Clientes</h3>
+@*AGREGAR TOOLBAR*@
+<div class="mb-3">
+    <button class="btn btn-outline-secondary btn-sm btn-group-sm" @onclick="Refrescar">Actualzar</button>
+</div>
+@*CODIGO HTML*@
+@if (dbClientes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+
+    <table id="x1" class="dxbs-table table table-bordered table-sm myFormat">
+        <tbody>
+            <DxDataGrid @ref="dataGrilla"
+                        Data="@dbClientes"
+                        RowUpdatingAsync="@OnRowUpdating"
+                        RowInsertingAsync="@OnRowInserting"
+                        InitNewRow="@OnInitNewRow"
+                        HtmlDataCellDecoration="@OnHtmlDataCellDecoration"
+                        HtmlRowDecoration="@OnHtmlRowDecoration">
+                <DxDataGridCommandColumn>
+                    <HeaderCellTemplate>
+                        <a class="oi oi-plus a" style="opacity: 0.5;" @onclick="@(() => dataGrilla.StartRowEdit(null))" href="javascript:void(0);"></a>
+                    </HeaderCellTemplate>
+                    <CellTemplate>
+                        <a class="oi oi-pencil a" style="opacity: 0.5;" @onclick="@(() => dataGrilla.StartRowEdit(context))" href="javascript:void(0);"></a>
+                        <a class="oi oi-x a" style="opacity: 0.5;" @onclick="@(() => BorrarItem(context as PCP.Shared.Models.Cliente))" href="javascript:void(0);"></a>
+                    </CellTemplate>
+                </DxDataGridCommandColumn>                
+                <DxDataGridColumn Field="@nameof(PCP.Shared.Models.Cliente.CG_CLI)" Caption="Código" Width="100px" TextAlignment="DataGridTextAlign.Center"></DxDataGridColumn>
+                <DxDataGridColumn Field="@nameof(PCP.Shared.Models.Cliente.DES_CLI)" Width="500px"></DxDataGridColumn>
+                @*<DxDataGridColumn Field="@nameof(PCP.Shared.Models.Cliente.CUIT)" Caption="CUIT" Width="150px"></DxDataGridColumn>*@
+                @*<DxDataGridComboBoxColumn AllowGroup="true" 
+                                          TextFieldName="@nameof(Provincia.DES_PROV)"
+                                          ValueFieldName="@nameof(Provincia.CG_PROV)"
+                                          Field="@nameof(PCP.Shared.Models.Cliente.cg)"
+                                          Caption="Provincia" Width="150px"
+                                          Data="@dbProvincias" />*@
+            </DxDataGrid>
+        </tbody>
+    </table>
+}
+
+@code
+{
+    DevExpress.Blazor.DxDataGrid<PCP.Shared.Models.Cliente> dataGrilla;
+    List<PCP.Shared.Models.Cliente> dbClientes;
+    List<Provincia> dbProvincias;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Refrescar();
+    }
+
+    protected async Task Refrescar()
+    {
+        PCP.Shared.Models.Cliente[] xClientes = await Http.GetFromJsonAsync<PCP.Shared.Models.Cliente[]>("api/Clientes");
+        dbClientes = (xClientes as IEnumerable<PCP.Shared.Models.Cliente>).ToList();
+
+        Provincia[] xProvicncias = await Http.GetFromJsonAsync<Provincia[]>("api/Provincias");
+        dbProvincias = (xProvicncias as IEnumerable<Provincia>).ToList();
+    }
+
+    async Task OnRowUpdating(PCP.Shared.Models.Cliente dataItem, IDictionary<string, object> newValue)
+    {
+        try
+        {
+            if (newValue.ContainsKey(nameof(PCP.Shared.Models.Cliente.DES_CLI)))
+            {
+                dataItem.DES_CLI = (string)newValue[nameof(PCP.Shared.Models.Cliente.DES_CLI)];
+            }
+            //if (newValue.ContainsKey(nameof(PCP.Shared.Models.Cliente.cui)))
+            //{
+            //    dataItem.CUIT = (string)newValue[nameof(PCP.Shared.Models.Cliente.CUIT)];
+            //}
+            //if (newValue.ContainsKey(nameof(PCP.Shared.Models.Cliente.)))
+            //{
+            //    dataItem.CG_PROV = (int)((Provincia)newValue[nameof(PCP.Shared.Models.Cliente.CG_PROV)]).CG_PROV;
+            //}
+            await Http.PutAsJsonAsync($"api/Clientes/{dataItem.CG_CLI}", dataItem);
+            //foreach (var field in newValue.Keys)
+            //{
+            //    switch (field)
+            //    {
+            //        case "Description":
+            //            dataItem.Description = (string)newValue[field];
+            //            break;
+            //        case "Region":
+            //            dataItem.Region = (string)newValue[field];
+            //            break;
+            //        case "City":
+            //            dataItem.CG_PROV = (int)newValue[field];
+            //            break;
+            //    }
+            //}
+        }
+        catch (Exception ex)
+        {
+        }
+    }
+
+    async Task OnRowInserting(IDictionary<string, object> newValue)
+    {
+        try
+        {
+            PCP.Shared.Models.Cliente dataItem = new PCP.Shared.Models.Cliente();
+            //if (newValue.ContainsKey(nameof(PCP.Shared.Models.Cliente.CgCli)))
+            //{
+            //    dataItem.CgCli = (int)newValue[nameof(PCP.Shared.Models.Cliente.CgCli)];
+            //}
+            if (newValue.ContainsKey(nameof(PCP.Shared.Models.Cliente.DES_CLI)))
+            {
+                dataItem.DES_CLI = (string)newValue[nameof(PCP.Shared.Models.Cliente.DES_CLI)];
+            }
+            //if (newValue.ContainsKey(nameof(PCP.Shared.Models.Cliente.CUIT)))
+            //{
+            //    dataItem.CUIT = (string)newValue[nameof(PCP.Shared.Models.Cliente.CUIT)];
+            //}
+            //if (newValue.ContainsKey(nameof(PCP.Shared.Models.Cliente.CG_PROV)))
+            //{
+            //    try
+            //    {
+            //        dataItem.CG_PROV = (int)newValue[nameof(PCP.Shared.Models.Cliente.CG_PROV)];
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        dataItem.CG_PROV = (int)((Provincia)newValue[nameof(PCP.Shared.Models.Cliente.CG_PROV)]).CG_PROV;
+            //    }
+            //}
+            dbClientes.Add(dataItem);
+            await dataGrilla.Refresh();
+            await Http.PostAsJsonAsync("api/Clientes", dataItem);
+        }
+        catch (Exception ex)
+        {
+        }
+    }
+
+    async Task BorrarItem(PCP.Shared.Models.Cliente dataItem)
+    {
+        try
+        {
+            if (dataItem != null)
+            {
+                bool isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Seguro de que desea eliminar el Cliente?");
+                if (isConfirmed)
+                {
+                    dbClientes.Remove(dbClientes.Find(m => m.CG_CLI == dataItem.CG_CLI));
+                    await dataGrilla.Refresh();
+                    await Http.DeleteAsync($"api/Clientes/{dataItem.CG_CLI}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+        }
+    }
+
+    Task OnInitNewRow(Dictionary<string, object> values)
+    {
+        try
+        {
+            values.Add("CG_CLI", 9999);
+            values.Add("CG_PROV", 1);
+            return Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
+    void OnHtmlRowDecoration(DataGridHtmlRowDecorationEventArgs<PCP.Shared.Models.Cliente> eventArgs)
+    {
+        if (eventArgs.VisibleIndex % 2 == 1)
+        {
+            eventArgs.Style += " background-color: lightgray; color: white;";
+            //eventArgs.CssClass = "table-dark border-0";
+        }
+    }
+
+    void OnHtmlDataCellDecoration(DataGridHtmlDataCellDecorationEventArgs<PCP.Shared.Models.Cliente> eventArgs)
+    {
+        //eventArgs.CssClass += " border-0";
+
+        //if (eventArgs.Field == nameof(PCP.Shared.Models.Cliente.DesCli))
+        //{
+        //    if (eventArgs.RowVisibleIndex % 2 == 1)
+        //        eventArgs.Style += " background-color: rgb(169, 148, 200); color: black;";
+        //    else
+        //        eventArgs.Style += " background-color: rgb(210, 198, 233); color: black;";
+        //}
+    }
+}

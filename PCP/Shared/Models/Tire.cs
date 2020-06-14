@@ -6,7 +6,7 @@ namespace PCP.Shared.Models
 {
     public class Tire
     {
-        public int Id { get; set; }
+        public int Tipoo { get; set; }
         public string Descrip { get; set; }
     }
 }

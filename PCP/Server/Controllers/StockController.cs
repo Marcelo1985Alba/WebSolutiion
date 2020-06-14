@@ -115,6 +115,16 @@ namespace PCP.Server.Controllers
             pedidos.USUARIO = "USER";
             pedidos.CG_CIA = 1;
 
+            //if (pedidos?.CG_TIRE == 0  || 
+            //    (pedidos.CG_TIRE == 5 && pedidos.CG_PROVE == 0) )
+            //{
+            //    return BadRequest();
+            //}
+
+            //if (pedidos.CG_TIRE == 5 && pedidos.CG_PROVE == 0)
+            //{
+
+            //}
 
             _context.Pedidos.Add(pedidos);
             try

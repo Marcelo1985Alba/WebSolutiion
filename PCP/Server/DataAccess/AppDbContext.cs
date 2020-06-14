@@ -15,7 +15,7 @@ namespace PCP.Server.DataAccess
         public virtual DbSet<Celda> Celdas { get; set; }
         public virtual DbSet<Compañia> Cias { get; set; }
         public virtual DbSet<Cliente> Clientes { get; set; }
-        //public virtual DbSet<Compras> Compras { get; set; }
+        public virtual DbSet<Compra> Compras { get; set; }
         //public virtual DbSet<Costofab> Costofab { get; set; }
         public virtual DbSet<Deposito> Depositos { get; set; }
         //public virtual DbSet<DwStockCorregido> DwStockCorregido { get; set; }

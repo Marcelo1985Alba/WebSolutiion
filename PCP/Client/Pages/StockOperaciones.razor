@@ -22,6 +22,7 @@
     </DxToolbar>*@
 
 </div>
+<Alerta Visible="MostrarAlerta" Tipo="TipoAlert"  Mensaje="@Mensaje"/>
 <hr />
 <DxFormLayout>
     @*SELECCION DE TIPO DE REMITO*@
@@ -35,11 +36,19 @@
             </DxComboBox>
         </Template>
     </DxFormLayoutItem>
-    <DxFormLayoutItem Caption="Orden de Fabriciòn" ColSpanMd="3" ColSpanXs="6">
+    <DxFormLayoutItem Caption="Orden de Fabrición" ColSpanMd="3" ColSpanXs="6">
         <Template>
             <div class="form-row">
                 <div class="col-10">
-                    <DxSpinEdit @bind-Value="@OrdenFabricacion" ShowSpinButtons="false"></DxSpinEdit>
+                    @if (selectedTire?.Tipoo == 5)
+                    {
+                        <DxSpinEdit Value="0" ShowSpinButtons="false" ReadOnly="true"></DxSpinEdit>
+                    }
+                    else
+                    {
+                        <DxSpinEdit @bind-Value="@OrdenFabricacion" ShowSpinButtons="false"></DxSpinEdit>
+
+                    }
                 </div>
                 <div class="col-2">
                     <button class="btn btn-outline-info btn-sm"
@@ -55,12 +64,18 @@
         <Template>
             <div class="form-row">
                 <div class="col-10">
-                    <DxSpinEdit @bind-Value="@OCompra" ShowSpinButtons="false"></DxSpinEdit>
+                    @if (selectedTire?.Tipoo == 5)
+                    {
+                        <DxSpinEdit @bind-Value="@OCompra" ShowSpinButtons="false"></DxSpinEdit>
+                    }
+                    else
+                    {
+                        <DxSpinEdit Value="0" ShowSpinButtons="false" ReadOnly="true"></DxSpinEdit>
+                    }
 
                 </div>
                 <div class="col-2">
-                    <button class="btn btn-outline-info btn-sm"
-                            disabled="@DisableCssClass">
+                    <button class="btn btn-outline-info btn-sm" @onclick="@(async ()=> await BuscarOCompras())">
                         ...
                     </button>
 
@@ -102,7 +117,12 @@
         <Template>
             <div class="form-row">
                 <div class="col-10">
-                    <DxSpinEdit @bind-Value="@Pedido"></DxSpinEdit>
+                    @if (selectedTire?.Tipoo == 5)
+                    {
+                        
+                        <DxSpinEdit @bind-Value="@Pedido"></DxSpinEdit>
+
+                    }
 
                 </div>
                 <div class="col-2">
@@ -139,14 +159,14 @@
     <DxFormLayoutItem Caption="Cliente/Proveedor" ColSpanXl="9" ColSpanMd="6" ColSpanSm="12">
         <Template>
             <div class="form-row">
-                <div class="col-3">
-                    <DxSpinEdit @bind-Value="@Cg_CLI_Cg_PROVE"
+                <div class="col-3 m-0">
+                    <DxSpinEdit @bind-Value="@Cg_CLI_Cg_PROVE" ReadOnly="true"
                                 ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto">
                     </DxSpinEdit>
 
                 </div>
                 <div class="col-7">
-                    <DxTextBox @bind-Text="@DescripcionPro" CssClass="ml-1"
+                    <DxTextBox @bind-Text="@DescripcionPro" CssClass="ml-1" ReadOnly="true"
                                ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto"></DxTextBox>
 
                 </div>
@@ -189,6 +209,9 @@
     int cg_cia = 1;
     bool DisableCssClass { get => selectedTire == null ? true : false; }
     int NumVale { get; set; }
+    bool MostrarAlerta = false;
+    TipoAlerta TipoAlert = TipoAlerta.danger;
+    string Mensaje = "";
 
     Producto[] Productos = null;
     Deposito[] Depositos = null;
@@ -199,18 +222,18 @@
 
 
     List<Tire> Tipos = new List<Tire>() {
-    new Tire() { Id = 10, Descrip = "Entrega de un insumo a una orden de fabricación" },
-    new Tire() { Id = 10, Descrip = "Devolución de un insumo de una orden de fabricación" },
-    new Tire() { Id = 28, Descrip = "Entrega de un insumo a una orden de armado" },/*tipo 28 = order de armado y tipo 10  10 OF*/
-    new Tire() { Id = 28, Descrip = "Devolución de un insumo de una orden de armado" },
-    new Tire() { Id = 2, Descrip = "Entrega de consumibles" }, /**/
-    new Tire() { Id = 5, Descrip = "Recepción de un insumo de un proveedor" }, /*Tipo 5 Recepcion y tipo 6 devolucion: */
-    new Tire() { Id = 6, Descrip = "Devolución de un insumo a un proveedor" },
-    new Tire() { Id = 14, Descrip = "Envío de un insumo o producto a scrap" }, /*TIPO 14 ENTREGA A SCRAP TIPO 15 DESTRUCCION DE SCRAP(NO PROGRAMADO) TIPO 16 DEVOLUCION DE SCRAP*/
-    new Tire() { Id = 15, Descrip = "Recuperación de un insumo o producto de scrap" },
-    new Tire() { Id = 9, Descrip = "Movimientos entre depósitos" }, /*TIPO 9*/
-    new Tire() { Id = 1, Descrip = "Entrega a un cliente con y sin pedido" }, /*TIPO 1*/
-    new Tire() { Id = 1, Descrip = "Devolución de un cliente con y sin pedido" }
+    new Tire() { Tipoo = 10, Descrip = "Entrega de un insumo a una orden de fabricación" },
+    new Tire() { Tipoo = 10, Descrip = "Devolución de un insumo de una orden de fabricación" },
+    new Tire() { Tipoo = 28, Descrip = "Entrega de un insumo a una orden de armado" },/*tipo 28 = order de armado y tipo 10  10 OF*/
+    new Tire() { Tipoo = 28, Descrip = "Devolución de un insumo de una orden de armado" },
+    new Tire() { Tipoo = 2, Descrip = "Entrega de consumibles" }, /**/
+    new Tire() { Tipoo = 5, Descrip = "Recepción de un insumo de un proveedor" }, /*Tipo 5 Recepcion y tipo 6 devolucion: */
+    new Tire() { Tipoo = 6, Descrip = "Devolución de un insumo a un proveedor" },
+    new Tire() { Tipoo = 14, Descrip = "Envío de un insumo o producto a scrap" }, /*TIPO 14 ENTREGA A SCRAP TIPO 15 DESTRUCCION DE SCRAP(NO PROGRAMADO) TIPO 16 DEVOLUCION DE SCRAP*/
+    new Tire() { Tipoo = 15, Descrip = "Recuperación de un insumo o producto de scrap" },
+    new Tire() { Tipoo = 9, Descrip = "Movimientos entre depósitos" }, /*TIPO 9*/
+    new Tire() { Tipoo = 1, Descrip = "Entrega a un cliente con y sin pedido" }, /*TIPO 1*/
+    new Tire() { Tipoo = 1, Descrip = "Devolución de un cliente con y sin pedido" }
     };
 
     Producto selectedProducto;
@@ -290,7 +313,7 @@
     {
         selectedTire = tire;
         //Dependiendo el tire Habilitar controles
-        if (selectedTire?.Id > 0)
+        if (selectedTire?.Tipoo > 0)
         {
             PermiteAgregarItem = true;
         }
@@ -335,6 +358,18 @@
 
     private async Task onGuardarPedido(Pedidos pedidos)
     {
+        if (pedidos.DESPACHO == null)
+        {
+            pedidos.DESPACHO = "";
+        }
+        if (pedidos.LOTE == null)
+        {
+            pedidos.LOTE = "";
+        }
+        if (pedidos.SERIE == null)
+        {
+            pedidos.SERIE = "";
+        }
         pedidos.FE_MOV = DateTime.Now;
         pedidos.VALE = NumVale;
         pedidos.REMITO = Remito;
@@ -344,26 +379,17 @@
         pedidos.OCOMPRA = OCompra;
         pedidos.CG_DEP = selectedDepositoIngreso.CG_DEP;
         pedidos.VOUCHER = 0;
-        pedidos.TIPOO = selectedTire.Id;
+        pedidos.TIPOO = selectedTire.Tipoo;
         pedidos.AVISO = "RECEPCION DE INSUMOS DE PROVEEDOR"; /*VERIFICAR TIPOO*/
-        pedidos.CAMPANA = "";
-        pedidos.CG_ART1 = "";
-        pedidos.DES_ART1 = "";
-        pedidos.CG_BARRAS = "";
-        pedidos.CG_COMP = 0;
-        pedidos.CG_COND = "";
+        pedidos.TIPO = "";
         pedidos.CG_POSTA = "";
-        pedidos.CG_ZONA = "";
         pedidos.COMPROB = "";
-        pedidos.CONDVEN = "";
-        pedidos.CONDVENEX = "";
-        pedidos.CONVMON = "";
+
         pedidos.CUIT = "";
         pedidos.DES_CLI = "";
         pedidos.DIRECC = "";
         pedidos.DIRENT = "";
         pedidos.FACTURA = "";
-        pedidos.IMPRESO = "";
         pedidos.LEYENDA = "";
         pedidos.LOCALIDAD = "";
         pedidos.MONEDA = "";
@@ -374,23 +400,58 @@
         pedidos.OBSERITEM = "";
         pedidos.OBSERVACIONES = "";
         pedidos.ORCO = "";
-        pedidos.PALLET = "";
-        pedidos.POSARAN = "";
-        pedidos.TIPO_FAC_AGRO = "";
         pedidos.UBICACION = "";
         pedidos.UNIDA = "";
-        pedidos.FE_FAC = DateTime.UtcNow;
         pedidos.ENTRREAL = DateTime.UtcNow;
-        var response = await Http.PostAsJsonAsync("api/Stock", pedidos);
 
-        await AbrirVale();
+        var response = await Http.PostAsJsonAsync("api/Stock", pedidos);
+        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            Console.WriteLine("Error 400:" + response.RequestMessage.Content.ReadAsStringAsync());
+            //Mostrar Alerta
+        }
+        else
+        {
+            await AbrirVale();
+            MostrarAlerta = true;
+            Mensaje = $"Vale Nro: {pedidos.VALE}";
+            TipoAlert = TipoAlerta.success;
+        }
+
 
     }
 
     private async Task onObjectSelected(object obj)
     {
+        ItemsVale = null;
         PopupBuscadorVisible = false;
         var tipoEntidad = obj.GetType().Name;
+        if (tipoEntidad == "Compra")
+        {
+            var compra = (Compra)obj;
+            List<Pedidos> lpedidos = new List<Pedidos>();
+            var ItemsCompras = await Http.GetFromJsonAsync<Compra[]>($"api/Compras/GetCompraByNumero/{compra.NUMERO}");
+            //Cargar los item de compras en los items de items para guardar vale
+            foreach (var item in ItemsCompras)
+            {
+                Pedidos pedido = new Pedidos();
+                pedido.OCOMPRA = item.NUMERO;
+                OCompra = (int)item.NUMERO;
+                pedido.CG_PROVE = item.CG_PROVE;
+                DescripcionPro = item.DES_PROVE;
+                pedido.CG_ART = item.CG_MAT;
+                pedido.DES_ART = item.DES_MAT;
+                pedido.UNID = item.UNID;
+                pedido.IMPORTE1 = item.PRECIO;
+
+                lpedidos.Add(pedido);
+            }
+
+            ItemsVale = lpedidos.ToArray();
+            //PermiteAgregarItem = true;
+            PermiteEditarItem = true;
+            PermiteEliminarItem = true;
+        }
         if (tipoEntidad == "Pedidos")
         {
             var pedido = (Pedidos)obj;
@@ -443,7 +504,7 @@
         ItemsABuscar = null;
         tituloBuscador = $"Listado de Vales";
         ColumnasBuscador = new string[] { "VALE", "FE_MOV", "CG_ART", "DES_ART" };
-        var tipoo = SelectedTire.Id;
+        var tipoo = SelectedTire.Tipoo;
         ItemsABuscar = await Http.GetFromJsonAsync<Pedidos[]>($"api/Stock/GetValesByTipo/{tipoo}");
         if (ItemsABuscar == null)
         {
@@ -462,6 +523,21 @@
         tituloBuscador = "Listado de Clientes";
         ColumnasBuscador = new string[] { "CG_CLI", "DES_CLI" };
         ItemsABuscar = await Http.GetFromJsonAsync<Producto[]>("api/Productos");
+        PopupBuscadorVisible = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    #endregion
+
+    #region "BUSCAR ORDEN DE COMPRA"
+
+    protected async Task BuscarOCompras()
+    {
+        MostrarAlerta = false;
+        ItemsABuscar = null;
+        tituloBuscador = "Listado de Ordenes de Compra";
+        ColumnasBuscador = new string[] { "NUMERO", "DES_PROVE" };
+        ItemsABuscar = await Http.GetFromJsonAsync<Compra[]>("api/Compras");
         PopupBuscadorVisible = true;
         await InvokeAsync(StateHasChanged);
     }

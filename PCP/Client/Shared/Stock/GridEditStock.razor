@@ -267,7 +267,7 @@ else
         EditContext = null;
         grid.CancelRowEdit();
     }
-    void HandleValidSubmit()
+    async Task HandleValidSubmit()
     {
         EditContext.DataItem.CG_ART = EditContext.CodigoProducto;
         EditContext.DataItem.DES_ART = EditContext.DescripcionProducto;
@@ -294,20 +294,20 @@ else
         {
 
 
-                onGuardar.InvokeAsync(EditContext.DataItem);
+            await onGuardar.InvokeAsync(EditContext.DataItem);
 
-            if (EditContext.IsNewRow)
-            {
-                //envio item pedido para guardar a Stock operarcion para poder agregarle los datos de la cabecera: vale, ocompra etc
+            //if (EditContext.IsNewRow)
+            //{
+            //    //envio item pedido para guardar a Stock operarcion para poder agregarle los datos de la cabecera: vale, ocompra etc
 
-                var nuevoItem = (new Pedidos[] { EditContext.DataItem });
-                //lPedidos = (new Pedidos[] { EditContext.DataItem }).Concat(lPedidos);
-                DataSource = nuevoItem.Concat(DataSource).ToArray();
-            }
+            //    var nuevoItem = (new Pedidos[] { EditContext.DataItem });
+            //    //lPedidos = (new Pedidos[] { EditContext.DataItem }).Concat(lPedidos);
+            //    DataSource = nuevoItem.Concat(DataSource).ToArray();
+            //}
 
 
             EditContext = null;
-            grid.CancelRowEdit();
+            await grid.CancelRowEdit();
         }
         catch (Exception ex)
         {
@@ -364,7 +364,7 @@ else
             EditContext.Cuenta = producto.CG_CUENT1;
             EditContext.ExigeOA = producto.ExigeOA;
             EditContext.Cg_Orden = producto.CG_ORDEN;
-            
+
         }
     }
 }

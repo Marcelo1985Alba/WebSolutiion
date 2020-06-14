@@ -3,7 +3,8 @@
 <DxComboBox NullText="Seleccione un Deposito..."
             Data="@Depositos"
             TextFieldName="DES_DEP"
-            SelectedItem="@DepositoSeleccionado">
+            SelectedItem="@DepositoSeleccionado"
+            SelectedItemChanged="@((deposito)=> SelectedDepositoChanged(deposito))">
 </DxComboBox>
 
 @code {
@@ -11,7 +12,8 @@
 
     [Parameter]
     public Deposito DepositoSeleccionado { get; set; } = new Deposito();
-
+    [Parameter]
+    public EventCallback<Deposito> OnSelectedDepositoChanged { get; set; }
     protected override async Task OnInitializedAsync()
     {
         Depositos = await Http.GetFromJsonAsync<IEnumerable<Deposito>>("api/Depositos");
@@ -20,6 +22,13 @@
         await InvokeAsync(StateHasChanged);
         Console.WriteLine("OnInitializedAsync");
 
+    }
+
+    private void SelectedDepositoChanged(Deposito depos)
+    {
+        DepositoSeleccionado = depos;
+        OnSelectedDepositoChanged.InvokeAsync(DepositoSeleccionado);
+        InvokeAsync(StateHasChanged);
     }
 
 }

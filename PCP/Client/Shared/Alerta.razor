@@ -1,7 +1,7 @@
 ﻿@if (Visible)
 {
     <div class="alert @ObtenerCssAlert() alert-dismissible fade show" role="alert">
-        <button type="button" class="close" @onclick="@(() => Visible = !Visible)" aria-label="Close">
+        <button type="button" @  class="close" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
         <strong>@MensajeCabecera</strong> @Mensaje

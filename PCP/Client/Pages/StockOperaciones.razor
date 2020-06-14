@@ -22,18 +22,16 @@
     </DxToolbar>*@
 
 </div>
-<Alerta Visible="MostrarAlerta" Tipo="TipoAlert"  Mensaje="@Mensaje"/>
 <hr />
+
+
 <DxFormLayout>
     @*SELECCION DE TIPO DE REMITO*@
     <DxFormLayoutItem Caption="Operaciones de Stock:" ColSpanLg="6" ColSpanMd="4">
         <Template>
-            <DxComboBox NullText="Seleccione una opcion..."
-                        Data="@Tipos"
-                        TextFieldName="Descrip"
-                        SelectedItem="@SelectedTire"
-                        SelectedItemChanged="@SelectedTireChanged">
-            </DxComboBox>
+            <ComboTipoo TipooSeleccionado="@SelectedTire" OnSelectedTireChanged="@SelectedTireChanged">
+
+            </ComboTipoo>
         </Template>
     </DxFormLayoutItem>
     <DxFormLayoutItem Caption="Orden de Fabrición" ColSpanMd="3" ColSpanXs="6">
@@ -138,22 +136,12 @@
     @*DEPOSITOS*@
     <DxFormLayoutItem Caption="Deposito de Salida:" ColSpanMd="6">
         <Template>
-            
-            <DxComboBox NullText="Seleccione un Deposito..."
-                        Data="@Depositos"
-                        TextFieldName="DES_DEP"
-                        @bind-SelectedItem="@SelectedDepositoSalida">
-            </DxComboBox>
-        </Template>
+            <ComboDeposito DepositoSeleccionado="@selectedDepositoSalida" OnSelectedDepositoChanged="SelectedDepositoSalidaChanged"/>        </Template>
     </DxFormLayoutItem>
     <DxFormLayoutItem Caption="Deposito de Ingreso:" ColSpanMd="6">
         <Template>
-            <DxComboBox NullText="Seleccione un Deposito..."
-                        Data="@Depositos"
-                        TextFieldName="DES_DEP"
-                        @bind-SelectedItem="@SelectedDepositoIngreso">
-            </DxComboBox>
-
+            <ComboDeposito DepositoSeleccionado="@selectedDepositoIngreso" 
+                           OnSelectedDepositoChanged="SelectedDepositoIngresoChanged"/>
         </Template>
     </DxFormLayoutItem>
     <DxFormLayoutItem Caption="Cliente/Proveedor" ColSpanXl="9" ColSpanMd="6" ColSpanSm="12">
@@ -194,8 +182,7 @@
         </Template>
     </DxFormLayoutItem>
 </DxFormLayout>
-@*<ComboDeposito DepositoSeleccionado="@selectedDepositoSalida"></ComboDeposito>
-<ComboDeposito DepositoSeleccionado="@selectedDepositoIngreso"></ComboDeposito>*@
+
 <div class="container-fluid">
     <GridEditStock DataSource="@ItemsVale" PermiteAgregar="@PermiteAgregarItem"
                    PermiteEditar="@PermiteEditarItem" PermiteEliminar="@PermiteEliminarItem"
@@ -221,20 +208,6 @@
     bool PermiteEliminarItem { get; set; } = false;
 
 
-    List<Tire> Tipos = new List<Tire>() {
-    new Tire() { Tipoo = 10, Descrip = "Entrega de un insumo a una orden de fabricación" },
-    new Tire() { Tipoo = 10, Descrip = "Devolución de un insumo de una orden de fabricación" },
-    new Tire() { Tipoo = 28, Descrip = "Entrega de un insumo a una orden de armado" },/*tipo 28 = order de armado y tipo 10  10 OF*/
-    new Tire() { Tipoo = 28, Descrip = "Devolución de un insumo de una orden de armado" },
-    new Tire() { Tipoo = 2, Descrip = "Entrega de consumibles" }, /**/
-    new Tire() { Tipoo = 5, Descrip = "Recepción de un insumo de un proveedor" }, /*Tipo 5 Recepcion y tipo 6 devolucion: */
-    new Tire() { Tipoo = 6, Descrip = "Devolución de un insumo a un proveedor" },
-    new Tire() { Tipoo = 14, Descrip = "Envío de un insumo o producto a scrap" }, /*TIPO 14 ENTREGA A SCRAP TIPO 15 DESTRUCCION DE SCRAP(NO PROGRAMADO) TIPO 16 DEVOLUCION DE SCRAP*/
-    new Tire() { Tipoo = 15, Descrip = "Recuperación de un insumo o producto de scrap" },
-    new Tire() { Tipoo = 9, Descrip = "Movimientos entre depósitos" }, /*TIPO 9*/
-    new Tire() { Tipoo = 1, Descrip = "Entrega a un cliente con y sin pedido" }, /*TIPO 1*/
-    new Tire() { Tipoo = 1, Descrip = "Devolución de un cliente con y sin pedido" }
-    };
 
     Producto selectedProducto;
     public Producto SelectedProducto
@@ -294,11 +267,8 @@
     {
         NumVale = await Http.GetFromJsonAsync<int>($"api/Stock/GetMaxVale");
         Depositos = await Http.GetFromJsonAsync<Deposito[]>("api/Depositos");
-        selectedDepositoSalida = Depositos[2];
-        selectedDepositoIngreso = Depositos[2];
-
-        SelectedDepositoSalida = Depositos[2];
-        SelectedDepositoIngreso = Depositos[2];
+        selectedDepositoSalida = Depositos[0];
+        selectedDepositoIngreso = Depositos[0];
 
         await InvokeAsync(StateHasChanged);
         Console.WriteLine("OnInitializedAsync");
@@ -324,9 +294,13 @@
         InvokeAsync(StateHasChanged);
     }
 
-    void itemChanged(Deposito deposito)
+    void SelectedDepositoSalidaChanged(Deposito deposito)
     {
         selectedDepositoSalida = deposito;
+    }
+    void SelectedDepositoIngresoChanged(Deposito deposito)
+    {
+        selectedDepositoIngreso = deposito;
     }
 
     void CargarVale()
@@ -377,7 +351,7 @@
         pedidos.AVISO = "";
         pedidos.CG_ORDF = 0;
         pedidos.OCOMPRA = OCompra;
-        pedidos.CG_DEP = selectedDepositoIngreso.CG_DEP;
+        pedidos.CG_DEP = SelectedDepositoIngreso.CG_DEP;
         pedidos.VOUCHER = 0;
         pedidos.TIPOO = selectedTire.Tipoo;
         pedidos.AVISO = "RECEPCION DE INSUMOS DE PROVEEDOR"; /*VERIFICAR TIPOO*/
@@ -413,9 +387,9 @@
         else
         {
             await AbrirVale();
-            MostrarAlerta = true;
-            Mensaje = $"Vale Nro: {pedidos.VALE}";
-            TipoAlert = TipoAlerta.success;
+            //MostrarAlerta = true;
+            //Mensaje = $"Vale Nro: {pedidos.VALE}";
+            //TipoAlert = TipoAlerta.success;
         }
 
 
@@ -438,6 +412,7 @@
                 pedido.OCOMPRA = item.NUMERO;
                 OCompra = (int)item.NUMERO;
                 pedido.CG_PROVE = item.CG_PROVE;
+                Cg_CLI_Cg_PROVE = item.CG_PROVE;
                 DescripcionPro = item.DES_PROVE;
                 pedido.CG_ART = item.CG_MAT;
                 pedido.DES_ART = item.DES_MAT;
@@ -533,7 +508,6 @@
 
     protected async Task BuscarOCompras()
     {
-        MostrarAlerta = false;
         ItemsABuscar = null;
         tituloBuscador = "Listado de Ordenes de Compra";
         ColumnasBuscador = new string[] { "NUMERO", "DES_PROVE" };

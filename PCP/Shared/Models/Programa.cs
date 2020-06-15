@@ -42,8 +42,7 @@ namespace PCP.Shared.Models
 		public decimal CANTORD { get; set; }
 		public string USUARIO { get; set; }
 		public int CG_CLAS { get; set; }
-		[Key]
-		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		[Column(TypeName = "decimal(18,0)")]
 		public decimal REGISTRO { get; set; }
 		[Column(TypeName = "decimal(18,4)")]

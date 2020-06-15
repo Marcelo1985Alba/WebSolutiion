@@ -72,6 +72,8 @@ namespace PCP.Shared.Models
         [ColumnaGridViewAtributo(Name = "Fecha autorización")]
         public DateTime? FE_AUTREQ { get; set; }
         [ColumnaGridViewAtributo(Name = "Proveedor")]
+        public int? CG_PROVE { get; set; }
+        [ColumnaGridViewAtributo(Name = "Proveedor")]
         public int? CG_PROVEREQ { get; set; }
         [ColumnaGridViewAtributo(Name = "Observaciones")]
         public string OBSEREQ { get; set; }

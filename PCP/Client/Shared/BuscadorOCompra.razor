@@ -13,13 +13,10 @@
 
         </div>
         <div class="col-2">
-            @if (MostraBotonBusqueda)
-            {
-                <DxButton Text="..." CssClass="btn " RenderStyle="@ButtonRenderStyle.Primary"
-                          Enabled="@HabilitaBotonBusqueda" Click="@(async (e)=> await BuscarOCompras())"
-                          RenderStyleMode="@ButtonRenderStyleMode.Outline"
-                          @onclick="@(async ()=> await BuscarOCompras())" />
-            }
+            <DxButton Text="..." RenderStyle="@ButtonRenderStyle.Primary" 
+                        Visible="@MostraBotonBusqueda"
+                        Enabled="@HabilitaBotonBusqueda" Click="@(async (e)=> await BuscarOCompras())"
+                        RenderStyleMode="@ButtonRenderStyleMode.Outline"/>
         </div>
         
     </div>

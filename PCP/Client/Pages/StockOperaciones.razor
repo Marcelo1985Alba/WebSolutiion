@@ -29,9 +29,7 @@
     @*SELECCION DE TIPO DE REMITO*@
     <DxFormLayoutItem Caption="Operaciones de Stock:" ColSpanLg="6" ColSpanMd="4">
         <Template>
-            <ComboTipoo TipooSeleccionado="@SelectedTire" OnSelectedTireChanged="@SelectedTireChanged">
-
-            </ComboTipoo>
+                <ComboTipoo TipooSeleccionado="@SelectedTire" OnSelectedTireChanged="@SelectedTireChanged"/>
         </Template>
     </DxFormLayoutItem>
     <DxFormLayoutItem Caption="Orden de Fabrición" ColSpanMd="3" ColSpanXs="6">
@@ -60,28 +58,33 @@
     @*BUSCAR OF*@
     <DxFormLayoutItem Caption="Orden de Compra:" ColSpanMd="3" ColSpanXs="6">
         <Template>
-                <BuscadorOCompra EsSoloLectura="@OCSoloLectura" HabilitaBotonBusqueda="@HabilitaBotonOC" 
-                                    MostraBotonBusqueda="true" MostrarSpin="false"
-                                    Valor="@OCompra" OnOCSeleccionada="onObjectSelected"/>
+            <div class="form-row">
+                <div class="col">
+                    <BuscadorOCompra EsSoloLectura="@OCSoloLectura" HabilitaBotonBusqueda="@HabilitaBotonOC"
+                                     MostraBotonBusqueda="true" MostrarSpin="false"
+                                     Valor="@OCompra" OnOCSeleccionada="onObjectSelected" />
+                </div>
+            </div>
+            
             @*<div class="form-row">
-                <div class="col-10">
-                    @if (selectedTire?.Tipoo == 5)
-                    {
-                        <DxSpinEdit @bind-Value="@OCompra" ShowSpinButtons="false"></DxSpinEdit>
-                    }
-                    else
-                    {
-                        <DxSpinEdit Value="0" ShowSpinButtons="false" ReadOnly="true"></DxSpinEdit>
-                    }
+            <div class="col-10">
+                @if (selectedTire?.Tipoo == 5)
+                {
+                    <DxSpinEdit @bind-Value="@OCompra" ShowSpinButtons="false"></DxSpinEdit>
+                }
+                else
+                {
+                    <DxSpinEdit Value="0" ShowSpinButtons="false" ReadOnly="true"></DxSpinEdit>
+                }
 
-                </div>
-                <div class="col-2">
-                    <button class="btn btn-outline-info btn-sm" @onclick="@(async ()=> await BuscarOCompras())">
-                        ...
-                    </button>
+            </div>
+            <div class="col-2">
+                <button class="btn btn-outline-info btn-sm" @onclick="@(async ()=> await BuscarOCompras())">
+                    ...
+                </button>
 
-                </div>
-            </div>*@
+            </div>
+        </div>*@
         </Template>
     </DxFormLayoutItem>
 
@@ -444,8 +447,8 @@
                 Stock pedido = new Stock();
                 pedido.OCOMPRA = item.NUMERO;
                 OCompra = (int)item.NUMERO;
-                //pedido.CG_PROVE = item.CG_PROVE;
-                //Cg_CLI_Cg_PROVE = item.CG_PROVE;
+                pedido.CG_PROVE = item.CG_PROVE;
+                Cg_CLI_Cg_PROVE = item.CG_PROVE;
                 DescripcionPro = item.DES_PROVE;
                 pedido.CG_ART = item.CG_MAT;
                 pedido.DES_ART = item.DES_MAT;
@@ -456,7 +459,7 @@
             }
 
             ItemsVale = lStock.ToArray();
-            //PermiteAgregarItem = true;
+            PermiteAgregarItem = false;
             PermiteEditarItem = true;
             PermiteEliminarItem = true;
         }

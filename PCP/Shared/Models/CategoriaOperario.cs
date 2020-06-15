@@ -1,5 +1,4 @@
-﻿using PCP.Shared.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -18,7 +17,6 @@ namespace PCP.Shared.Models
         [ColumnaGridViewAtributo(Name = "Categoria")]
         public string DES_CATEOP { get; set; }
         [ColumnaGridViewAtributo(Name = "Valor hora")]
-        [Column(TypeName = "decimal(18,4)")]
         public decimal? VALOR_HORA { get; set; }
         [ColumnaGridViewAtributo(Name = "Moneda")]
         public string MONEDA { get; set; }

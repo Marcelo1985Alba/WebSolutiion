@@ -1,5 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 
 namespace PCP.Shared.Models
 {
@@ -14,10 +18,8 @@ namespace PCP.Shared.Models
         [ColumnaGridViewAtributo(Name = "Tipo unidad")]
         public string TIPOUNID { get; set; }
         [ColumnaGridViewAtributo(Name = "Conversión")]
-        [Column(TypeName = "decimal(18,4)")]
-        public decimal CG_DENBASICA { get; set; }
+        public int? CG_DNBASICA { get; set; }
         [ColumnaGridViewAtributo(Name = "Codigo")]
-        [Column(TypeName = "decimal(2,0)")]
         public int? CODIGO { get; set; }
         [ColumnaGridViewAtributo(Name = "Compañía")]
         public int? CG_CIA { get; set; }

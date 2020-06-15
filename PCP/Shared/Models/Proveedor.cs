@@ -7,15 +7,15 @@ using System.Text;
 
 namespace PCP.Shared.Models
 {
-    [Table("Cliente")]
-    public class Cliente
+    [Table("Prove")]
+    public class Proveedor
     {
         [Key]
         [ColumnaGridViewAtributo(Name = "Codigo")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int? CG_CLI { get; set; }
-        [ColumnaGridViewAtributo(Name = "Nombre del cliente")]
-        public string DES_CLI { get; set; }
+        public int? CG_PROVE { get; set; }
+        [ColumnaGridViewAtributo(Name = "Nombre del proveedor")]
+        public string DES_PROVE { get; set; }
         [ColumnaGridViewAtributo(Name = "Onservaciones")]
         public string OBSERVACIONES { get; set; }
         [ColumnaGridViewAtributo(Name = "Dirección")]
@@ -68,19 +68,5 @@ namespace PCP.Shared.Models
         public int? LEY19640 { get; set; }
         [ColumnaGridViewAtributo(Name = "Compañía")]
         public int? CG_CIA { get; set; }
-
-
-
-
-
-
-
-
-
-
-
-        
-
-
     }
 }

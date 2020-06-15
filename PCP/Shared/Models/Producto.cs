@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using PCP.Shared.Models;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace PCP.Shared.Models
 {
@@ -11,76 +9,76 @@ namespace PCP.Shared.Models
     public class Producto
     {
         [Key]
-        [ColumnaGridViewAtributo(Name = "Cod. Producto")]
+        [ColumnaGridViewAtributo(Name = "Código producto")]
         public string CG_PROD { get; set; }
-        [ColumnaGridViewAtributo(Name = "Descripcion Producto")]
+        [ColumnaGridViewAtributo(Name = "Nombre producto")]
         public string DES_PROD { get; set; }
-		public int CG_ORDEN { get; set; }
-		public string TIPO { get; set; }
-		public int CG_CLAS { get; set; }
-		public string UNID { get; set; }
-		public decimal CG_DENSEG { get; set; }
-		public string UNIDSEG { get; set; }
-		public decimal PESO { get; set; }
-		public string UNIDPESO { get; set; }
-		public string ESPECIF { get; set; }
-		public string NORMA { get; set; }
-		public bool EXIGEDESPACHO { get; set; }
-		public bool EXIGELOTE { get; set; }
-		public bool EXIGESERIE { get; set; }
-		public decimal STOCKMIN { get; set; }
-		public decimal LOPTIMO { get; set; }
-		public int CG_DEPOSM { get; set; }
-		public int CG_AREA { get; set; }
-		public DateTime? FE_UMA_ACT { get; set; }
-		public string LINEA { get; set; }
-		public int CANT_CAJA { get; set; }
-		public int PER_GTIA { get; set; }
-		public int CG_LINEA { get; set; }
-		public int CG_FORM { get; set; }
-		public decimal MERMA { get; set; }
-		public string CG_ACTIVO { get; set; }
-		public decimal TIEMPOFAB { get; set; }
-		public decimal COSTO { get; set; }
-		public decimal COSTOTER { get; set; }
-		public string MONEDA { get; set; }
-		public decimal SETUP { get; set; }
-		public string CG_CELDA { get; set; }
-		public string CERFAB { get; set; }
-		public int CG_TIPOAREA { get; set; }
-		public string NROPLANO { get; set; }
-		public string PROYECTO { get; set; }
-		public string CAMPOCOM1 { get; set; }
-		public string CAMPOCOM2 { get; set; }
-		public string CAMPOCOM3 { get; set; }
-		public string CAMPOCOM4 { get; set; }
-		public string CAMPOCOM5 { get; set; }
-		public string CAMPOCOM6 { get; set; }
-		public string CAMPOCOM7 { get; set; }
-		public string CAMPOCOM8 { get; set; }
-		public string CAMPOCOM9 { get; set; }
-		public string CAMPOCOM10 { get; set; }
-		public string CAMPOCOM11 { get; set; }
-		public string CAMPOCOM12 { get; set; }
-		public decimal CG_CUENT1 { get; set; }
-		public int LOTEVALOR1 { get; set; }
-		public int LOTEVALOR2 { get; set; }
-		public int CG_COS { get; set; }
-		public string DESPLANO { get; set; }
-		public string POSARAN { get; set; }
-		public decimal UNIDEQUI { get; set; }
-		public decimal COSTOUC { get; set; }
-		public string MONEDAUC { get; set; }
-		public decimal COSTOUC1 { get; set; }
-		public DateTime? FE_UC { get; set; }
-		public string UBICACION { get; set; }
-		public int CG_EST { get; set; }
-		public decimal PENDIENTE { get; set; }
-		public decimal PPEDIDO { get; set; }
-		public int DIAS { get; set; }
-		public string WEB { get; set; }
-		public string CG_PRODCLI { get; set; }
-		public bool ExigeOA { get; set; }
-		public int CG_CIA { get; set; }
-	}
+        [ColumnaGridViewAtributo(Name = "Tipo insumo")]
+        public int? CG_ORDEN { get; set; }
+        [ColumnaGridViewAtributo(Name = "Tipo producto")]
+        public string TIPO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Unidad stock")]
+        public string UNID { get; set; }
+        [ColumnaGridViewAtributo(Name = "Factor de conversión")]
+        public decimal? CG_DENSEG { get; set; }
+        [ColumnaGridViewAtributo(Name = "Unidad comercial")]
+        public string UNIDSEG { get; set; }
+        [ColumnaGridViewAtributo(Name = "Peso")]
+        public string PESO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Unidad peso")]
+        public string UNIDPESO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Especificaciones")]
+        public string ESPECIF { get; set; }
+        [ColumnaGridViewAtributo(Name = "Norma")]
+        public string NORMA { get; set; }
+        [ColumnaGridViewAtributo(Name = "Exige despacho")]
+        public int? EXIGEDESPACHO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Exige lote")]
+        public int? EXIGELOTE { get; set; }
+        [ColumnaGridViewAtributo(Name = "Exige serie")]
+        public int? EXIGESERIE { get; set; }
+        [ColumnaGridViewAtributo(Name = "Stock mínimo")]
+        public int? EXIGEOA { get; set; }
+        [ColumnaGridViewAtributo(Name = "Orden de armado")]
+        public decimal? STOCKMIN { get; set; }
+        [ColumnaGridViewAtributo(Name = "Lote óptimo compra")]
+        public decimal? LOPTIMO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Area fabricación")]
+        public int? CG_AREA { get; set; }
+        [ColumnaGridViewAtributo(Name = "Línea fabricación")]
+        public int? CG_LINEA { get; set; }
+        [ColumnaGridViewAtributo(Name = "Activo")]
+        public string ACTIVO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Tiempo fabricación")]
+        public decimal? TIEMPOFAB { get; set; }
+        [ColumnaGridViewAtributo(Name = "Costo fabricación")]
+        public decimal? COSTO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Costo fabricación terceros")]
+        public decimal? COSTOTER { get; set; }
+        [ColumnaGridViewAtributo(Name = "Moneda costo")]
+        public string MONEDA { get; set; }
+        [ColumnaGridViewAtributo(Name = "Celda fabricación")]
+        public string CG_CELDA { get; set; }
+        [ColumnaGridViewAtributo(Name = "Tipo área fabricación")]
+        public int? CG_TIPOAREA { get; set; }
+        [ColumnaGridViewAtributo(Name = "Cuenta contable")]
+        public decimal? CG_CUENT { get; set; }
+        [ColumnaGridViewAtributo(Name = "Unidad equivalente costo")]
+        public decimal? UNIDEQUI { get; set; }
+        [ColumnaGridViewAtributo(Name = "Costo ultima compra")]
+        public decimal? COSTOUC { get; set; }
+        [ColumnaGridViewAtributo(Name = "Moneda ultima compra")]
+        public string MONEDAUC { get; set; }
+        [ColumnaGridViewAtributo(Name = "Costo ultima compra")]
+        public decimal? COSTOUC1 { get; set; }
+        [ColumnaGridViewAtributo(Name = "Fecha ultima compra")]
+        public decimal? FE_UC { get; set; }
+        [ColumnaGridViewAtributo(Name = "Usuario")]
+        public string USUARIO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Fecha registro")]
+        public DateTime FE_REG { get; set; }
+        [ColumnaGridViewAtributo(Name = "Compañía")]
+        public int? CG_CIA { get; set; }
+
+    }
 }

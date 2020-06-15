@@ -7,17 +7,20 @@ using System.Text;
 
 namespace PCP.Shared.Models
 {
-    [Table("Prov")]
-    public class Provincia
+    [Table("Pais")]
+    public class pais
     {
         [Key]
         [ColumnaGridViewAtributo(Name = "Codigo")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int? CG_PROV { get; set; }
-        [ColumnaGridViewAtributo(Name = "Provincia")]
-        public string DES_PROV { get; set; }
+        public int? Codigo { get; set; }
         [ColumnaGridViewAtributo(Name = "Pais")]
-        public int? CG_PAIS { get; set; }
+        public string Des_Pais { get; set; }
+        [ColumnaGridViewAtributo(Name = "Es Mercosur")]
+        public int? Mercosur { get; set; }
+        [ColumnaGridViewAtributo(Name = "CUIT")]
+        public string Cuit { get; set; }
+
 
     }
 }

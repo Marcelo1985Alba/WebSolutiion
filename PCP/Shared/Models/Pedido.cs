@@ -7,7 +7,7 @@ using System.Text;
 namespace PCP.Shared.Models
 {
 	[Table("Pedidos")]
-	public class Pedidos
+	public class PedidosBak
 	{
 		[ColumnaGridViewAtributo(Name ="Vale")]
 		public decimal VALE { get; set; }

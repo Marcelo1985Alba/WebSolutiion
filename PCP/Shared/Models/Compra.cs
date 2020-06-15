@@ -1,80 +1,108 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
+
 namespace PCP.Shared.Models
 {
-	[Table("Compras")]
-	public class Compra
-	{
-		[ColumnaGridViewAtributo(Name ="Numero OC")]
-		public decimal NUMERO { get; set; }
-		[ColumnaGridViewAtributo(Name = "Fecha"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-		public DateTime FE_EMIT { get; set; }
-        public string CG_PREP { get; set; }
-		public int CG_ORDEN { get; set; }
-		public string CG_MAT { get; set; }
-		public string DES_MAT { get; set; }
-		public string TIPO { get; set; }
-		public string TILDE { get; set; }
-		public string TILDE1 { get; set; }
-		public string TILDE2 { get; set; }
-		public string TILDE3 { get; set; }
-		public decimal NECESARIO { get; set; }
-		public decimal SOLICITADO { get; set; }
-		public decimal AUTORIZADO { get; set; }
-		public string UNID { get; set; }
-		public decimal CG_DEN { get; set; }
-		public string UNID1 { get; set; }
-		public decimal PRECIO { get; set; }
-		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-		public decimal PRECIONETO { get; set; }
-		[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-		public decimal PRECIOTOT { get; set; }
-		public decimal BON { get; set; }
-		public string MONEDA { get; set; }
-		public int CG_PROVE { get; set; }
-		[ColumnaGridViewAtributo(Name ="Proveedor")]
-		public string DES_PROVE { get; set; }
-		public DateTime? FE_PREV { get; set; }
-		public DateTime? FE_REAL { get; set; }
-		public DateTime? FE_VENC { get; set; }
-		public DateTime? FE_CIERRE { get; set; }
-		public string CONDVEN { get; set; }
-		public decimal CG_CUENT { get; set; }
-		public int DIASVIGE { get; set; }
-		public decimal? CANTLOTE { get; set; }
-		public decimal CANTMIN { get; set; }
-		public string ESPECIFICA { get; set; }
-		public string ESPEGEN { get; set; }
-		public string ESTADO { get; set; }
-		public DateTime? FE_DISP { get; set; }
-		public bool ABIERTOPREPARACION { get; set; }
-		public decimal NUMREQ { get; set; }
-		public DateTime? FE_REQ { get; set; }
-		public DateTime? FE_AUTREQ { get; set; }
-		public int CG_PROVEREQ { get; set; }
-		public string OBSEREQ { get; set; }
-		public string MARCAREQ { get; set; }
-		public decimal AVANCE { get; set; }
-		public string TXTOBSERVADO { get; set; }
-		public string TXTCORREGIDO { get; set; }
-		public string USUARIO_AUT { get; set; }
-		public DateTime? FE_AUT { get; set; }
-		public DateTime? FE_CIERREREQ { get; set; }
-		public string USUREQ { get; set; }
-		public int ESTADO_CAB { get; set; }
-		public int ESTADO_IT { get; set; }
-		public decimal NECESARIO_ORI { get; set; }
-		public decimal NUM_SOLCOT { get; set; }
-		public decimal SOLICITADO_ORI { get; set; }
-		public bool MODIF_INGRESO { get; set; }
-		public decimal PENDIENTE { get; set; }
-		public string OBSERVACIONES { get; set; }
-		public string USUARIO { get; set; }
-		public DateTime? FE_REG { get; set; }
-		[Key]
-		public decimal REGISTRO { get; set; }
-		public int CG_CIA { get; set; }
-	}
+    [Table("Compras")]
+    public class Compra
+    {
+        [ColumnaGridViewAtributo(Name = "Número")]
+        public decimal? NUMERO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Fecha emisión")]
+        public DateTime FE_EMIT { get; set; }
+        [ColumnaGridViewAtributo(Name = "Código")]
+        public string CG_MAT { get; set; }
+        [ColumnaGridViewAtributo(Name = "Nombre producto")]
+        public string DES_MAT { get; set; }
+        [ColumnaGridViewAtributo(Name = "Necesario")]
+        public decimal? NECESARIO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Solicitado")]
+        public decimal? SOLICITADO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Autorizado")]
+        public decimal? AUTORIZADO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Unidad stock")]
+        public string UNID { get; set; }
+        [ColumnaGridViewAtributo(Name = "Unidad compra")]
+        public string UNID1 { get; set; }
+        [ColumnaGridViewAtributo(Name = "Factor conversión")]
+        public decimal? CG_DEN { get; set; }
+        [ColumnaGridViewAtributo(Name = "Precio unidad compra")]
+        public decimal? PRECIO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Descuento")]
+        public decimal? BON { get; set; }
+        [ColumnaGridViewAtributo(Name = "Precio con descuento")]
+        public decimal? PRECIONETO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Precio total")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public decimal? PRECIOTOT { get; set; }
+        [ColumnaGridViewAtributo(Name = "Moneda")]
+        public string MONEDA { get; set; }
+        //[ColumnaGridViewAtributo(Name = "Proveedor")]
+        //public int NROCLTE { get; set; }
+        [ColumnaGridViewAtributo(Name = "Nombre proveedor")]
+        public string DES_PROVE { get; set; }
+        [ColumnaGridViewAtributo(Name = "Fecha prevista entrega")]
+        public DateTime? FE_PREV { get; set; }
+        [ColumnaGridViewAtributo(Name = "Fecha real entrega")]
+        public DateTime? FE_REAL { get; set; }
+        [ColumnaGridViewAtributo(Name = "Fecha vencimiento")]
+        public DateTime? FE_VENC { get; set; }
+        [ColumnaGridViewAtributo(Name = "Fecha cierre")]
+        public DateTime? FE_CIERRE { get; set; }
+        //[ColumnaGridViewAtributo(Name = "Fecha precio")]
+        //public DateTime FE_PREC { get; set; }
+        [ColumnaGridViewAtributo(Name = "Condiciones compra")]
+        public string CONDVEN { get; set; }
+        //[ColumnaGridViewAtributo(Name = "Condiciones precio")]
+        //public string CONDPREC { get; set; }
+        //[ColumnaGridViewAtributo(Name = "Condiciones importación")]
+        //public string CONDVENEX { get; set; }
+        [ColumnaGridViewAtributo(Name = "Especific.particulares")]
+        public string ESPECIFICA { get; set; }
+        //[ColumnaGridViewAtributo(Name = "Especific.grales")]
+        //public string ESTEGEN { get; set; }
+        [ColumnaGridViewAtributo(Name = "Preparación")]
+        public bool ABIERTOPREPARACION { get; set; }
+        [ColumnaGridViewAtributo(Name = "Fecha requisición")]
+        public DateTime? FE_REQ { get; set; }
+        [ColumnaGridViewAtributo(Name = "Fecha autorización")]
+        public DateTime? FE_AUTREQ { get; set; }
+        [ColumnaGridViewAtributo(Name = "Proveedor")]
+        public int? CG_PROVEREQ { get; set; }
+        [ColumnaGridViewAtributo(Name = "Observaciones")]
+        public string OBSEREQ { get; set; }
+        [ColumnaGridViewAtributo(Name = "Tilde")]
+        public string MARCAREQ { get; set; }
+        [ColumnaGridViewAtributo(Name = "Avance")]
+        public decimal? AVANCE { get; set; }
+        [ColumnaGridViewAtributo(Name = "Texto observado")]
+        public string TXTOBSERVADO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Texto corregido")]
+        public string TXTCORREGIDO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Autorizador")]
+        public string USUARIO_AUT { get; set; }
+        [ColumnaGridViewAtributo(Name = "Fecha autorización")]
+        public DateTime? FE_AUT { get; set; }
+        //[ColumnaGridViewAtributo(Name = "Fecha cierre")]
+        //public DateTime FE_CIERREQ { get; set; }
+        [ColumnaGridViewAtributo(Name = "Usuario requisidor")]
+        public string USUREQ { get; set; }
+        [ColumnaGridViewAtributo(Name = "Observaciones")]
+        public string OBSERVACIONES { get; set; }
+        [ColumnaGridViewAtributo(Name = "Usuario")]
+        public string USUARIO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Fecha registro")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime FE_REG { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [ColumnaGridViewAtributo(Name = "Registro")]
+        public decimal? REGISTRO { get; set; }
+        [ColumnaGridViewAtributo(Name = "Compañía")]
+        public int? CG_CIA { get; set; }
+    }
 }

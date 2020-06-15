@@ -1,5 +1,4 @@
-﻿using PCP.Shared.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -33,10 +32,8 @@ namespace PCP.Shared.Models
         [ColumnaGridViewAtributo(Name = "Moneda")]
         public string MONEDA { get; set; }
         [ColumnaGridViewAtributo(Name = "Años amortización")]
-        [Column(TypeName = "decimal(6,2)")]
         public decimal? CANT_ANOS { get; set; }
         [ColumnaGridViewAtributo(Name = "Cantidad unidad")]
-        [Column(TypeName = "decimal(18,4)")]
         public decimal? CANT_UNID { get; set; }
         [ColumnaGridViewAtributo(Name = "Años de reposición")]
         public decimal? REP_ANOS { get; set; }
@@ -47,7 +44,6 @@ namespace PCP.Shared.Models
         [ColumnaGridViewAtributo(Name = "Combustible")]
         public decimal? COMBUST { get; set; }
         [ColumnaGridViewAtributo(Name = "Aire comprimido")]
-        [Column(TypeName = "decimal(18,4)")]
         public decimal? AIRE_COMP { get; set; }
         [ColumnaGridViewAtributo(Name = "Tipo celda")]
         public int? CG_TIPOCELDA { get; set; }

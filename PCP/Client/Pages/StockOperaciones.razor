@@ -60,7 +60,10 @@
     @*BUSCAR OF*@
     <DxFormLayoutItem Caption="Orden de Compra:" ColSpanMd="3" ColSpanXs="6">
         <Template>
-            <div class="form-row">
+                <BuscadorOCompra EsSoloLectura="@OCSoloLectura" HabilitaBotonBusqueda="@HabilitaBotonOC" 
+                                    MostraBotonBusqueda="true" MostrarSpin="false"
+                                    Valor="@OCompra" OnOCSeleccionada="onObjectSelected"/>
+            @*<div class="form-row">
                 <div class="col-10">
                     @if (selectedTire?.Tipoo == 5)
                     {
@@ -78,7 +81,7 @@
                     </button>
 
                 </div>
-            </div>
+            </div>*@
         </Template>
     </DxFormLayoutItem>
 
@@ -202,10 +205,13 @@
 
     Producto[] Productos = null;
     Deposito[] Depositos = null;
-    Pedidos[] ItemsVale = null;
+    Stock[] ItemsVale = null;
     bool PermiteAgregarItem { get; set; } = false;
     bool PermiteEditarItem { get; set; } = false;
     bool PermiteEliminarItem { get; set; } = false;
+
+    bool OCSoloLectura = true;
+    bool HabilitaBotonOC = false;
 
 
 
@@ -230,7 +236,7 @@
 
     private int OrdenFabricacion { get; set; } = 0;
     private int Pedido { get; set; } = 0;
-    private int Cg_CLI_Cg_PROVE { get; set; } = 0;
+    private int? Cg_CLI_Cg_PROVE { get; set; } = 0;
     private int OCompra { get; set; } = 0;
     private string Remito { get; set; } = "";
     private DateTime fecha = DateTime.Now;
@@ -274,8 +280,8 @@
         Console.WriteLine("OnInitializedAsync");
 
 
-        ItemsVale = new List<Pedidos>().ToArray();
-        //ItemsVale = await Http.GetFromJsonAsync<Pedidos[]>($"api/Stock/AbriVale/-1");
+        ItemsVale = new List<Stock>().ToArray();
+        //ItemsVale = await Http.GetFromJsonAsync<Stock[]>($"api/Stock/AbriVale/-1");
 
     }
 
@@ -291,6 +297,19 @@
         {
             PermiteAgregarItem = false;
         }
+
+
+        if (selectedTire?.Tipoo == 5)
+        {
+            HabilitaBotonOC = true;
+            OCSoloLectura = false;
+        }
+        else
+        {
+            HabilitaBotonOC = false;
+            OCSoloLectura = true;
+        }
+
         InvokeAsync(StateHasChanged);
     }
 
@@ -330,55 +349,69 @@
     private bool popupVisible = false;
     bool PopupVisible { get => popupVisible; set { popupVisible = value; InvokeAsync(StateHasChanged); } }
 
-    private async Task onGuardarPedido(Pedidos pedidos)
+    private async Task onGuardarPedido(Stock Stock)
     {
-        if (pedidos.DESPACHO == null)
+        if (Stock.DESPACHO == null)
         {
-            pedidos.DESPACHO = "";
+            Stock.DESPACHO = "";
         }
-        if (pedidos.LOTE == null)
+        if (Stock.LOTE == null)
         {
-            pedidos.LOTE = "";
+            Stock.LOTE = "";
         }
-        if (pedidos.SERIE == null)
+        if (Stock.SERIE == null)
         {
-            pedidos.SERIE = "";
+            Stock.SERIE = "";
         }
-        pedidos.FE_MOV = DateTime.Now;
-        pedidos.VALE = NumVale;
-        pedidos.REMITO = Remito;
-        pedidos.CG_PROVE = Cg_CLI_Cg_PROVE;
-        pedidos.AVISO = "";
-        pedidos.CG_ORDF = 0;
-        pedidos.OCOMPRA = OCompra;
-        pedidos.CG_DEP = SelectedDepositoIngreso.CG_DEP;
-        pedidos.VOUCHER = 0;
-        pedidos.TIPOO = selectedTire.Tipoo;
-        pedidos.AVISO = "RECEPCION DE INSUMOS DE PROVEEDOR"; /*VERIFICAR TIPOO*/
-        pedidos.TIPO = "";
-        pedidos.CG_POSTA = "";
-        pedidos.COMPROB = "";
 
-        pedidos.CUIT = "";
-        pedidos.DES_CLI = "";
-        pedidos.DIRECC = "";
-        pedidos.DIRENT = "";
-        pedidos.FACTURA = "";
-        pedidos.LEYENDA = "";
-        pedidos.LOCALIDAD = "";
-        pedidos.MONEDA = "";
-        pedidos.OBS1 = "";
-        pedidos.OBS2 = "";
-        pedidos.OBS3 = "";
-        pedidos.OBS4 = "";
-        pedidos.OBSERITEM = "";
-        pedidos.OBSERVACIONES = "";
-        pedidos.ORCO = "";
-        pedidos.UBICACION = "";
-        pedidos.UNIDA = "";
-        pedidos.ENTRREAL = DateTime.UtcNow;
-
-        var response = await Http.PostAsJsonAsync("api/Stock", pedidos);
+        Stock.NUMOCI = 0;
+        Stock.FE_MOV = DateTime.Now;
+        Stock.VALE = NumVale;
+        Stock.REMITO = Remito;
+        Stock.CG_CLI = 0;
+        Stock.CG_PROVE = Cg_CLI_Cg_PROVE;
+        Stock.DES_PROVE = DescripcionPro.Trim();
+        Stock.FLAG = 0;
+        Stock.AVISO = "";
+        Stock.CG_ORDF = 0;
+        Stock.OCOMPRA = OCompra;
+        Stock.CG_DEP = SelectedDepositoIngreso.CG_DEP;
+        Stock.VOUCHER = 0;
+        Stock.TIPOO = selectedTire.Tipoo;
+        Stock.AVISO = "RECEPCION DE INSUMOS DE PROVEEDOR"; /*VERIFICAR TIPOO*/
+        Stock.TIPO = "";
+        Stock.CG_POSTA = "";
+        Stock.COMPROB = "";
+        Stock.CG_DEN = 0;
+        Stock.DESCUENTO = 0;
+        Stock.CUIT = "";
+        Stock.DES_CLI = "";
+        Stock.DIRECC = "";
+        Stock.DIRENT = "";
+        Stock.FACTURA = "";
+        Stock.LEYENDA = "";
+        Stock.LOCALIDAD = "";
+        Stock.MONEDA = "";
+        Stock.OBS1 = "";
+        Stock.OBS2 = "";
+        Stock.OBS3 = "";
+        Stock.OBS4 = "";
+        Stock.OBSERITEM = "";
+        Stock.OBSERVACIONES = "";
+        Stock.ORCO = "";
+        Stock.UBICACION = "";
+        Stock.UNIDA = "";
+        Stock.ENTRREAL = DateTime.UtcNow;
+        Stock.PEDIDO = 0;
+        Stock.IVA = 0;
+        Stock.BONIFIC = 0;
+        Stock.CANTENT = 0;
+        Stock.CANTENTA = 0;
+        Stock.CANTPED = 0;
+        Stock.STOCKA = 0;
+        Stock.VA_INDIC = 0;
+        Stock.IMPORTE6 = 0;
+        var response = await Http.PostAsJsonAsync("api/Stock", Stock);
         if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
             Console.WriteLine("Error 400:" + response.RequestMessage.Content.ReadAsStringAsync());
@@ -388,7 +421,7 @@
         {
             await AbrirVale();
             //MostrarAlerta = true;
-            //Mensaje = $"Vale Nro: {pedidos.VALE}";
+            //Mensaje = $"Vale Nro: {Stock.VALE}";
             //TipoAlert = TipoAlerta.success;
         }
 
@@ -403,36 +436,36 @@
         if (tipoEntidad == "Compra")
         {
             var compra = (Compra)obj;
-            List<Pedidos> lpedidos = new List<Pedidos>();
+            List<Stock> lStock = new List<Stock>();
             var ItemsCompras = await Http.GetFromJsonAsync<Compra[]>($"api/Compras/GetCompraByNumero/{compra.NUMERO}");
             //Cargar los item de compras en los items de items para guardar vale
             foreach (var item in ItemsCompras)
             {
-                Pedidos pedido = new Pedidos();
+                Stock pedido = new Stock();
                 pedido.OCOMPRA = item.NUMERO;
                 OCompra = (int)item.NUMERO;
-                pedido.CG_PROVE = item.CG_PROVE;
-                Cg_CLI_Cg_PROVE = item.CG_PROVE;
+                //pedido.CG_PROVE = item.CG_PROVE;
+                //Cg_CLI_Cg_PROVE = item.CG_PROVE;
                 DescripcionPro = item.DES_PROVE;
                 pedido.CG_ART = item.CG_MAT;
                 pedido.DES_ART = item.DES_MAT;
                 pedido.UNID = item.UNID;
                 pedido.IMPORTE1 = item.PRECIO;
 
-                lpedidos.Add(pedido);
+                lStock.Add(pedido);
             }
 
-            ItemsVale = lpedidos.ToArray();
+            ItemsVale = lStock.ToArray();
             //PermiteAgregarItem = true;
             PermiteEditarItem = true;
             PermiteEliminarItem = true;
         }
-        if (tipoEntidad == "Pedidos")
+        if (tipoEntidad == "Stock")
         {
-            var pedido = (Pedidos)obj;
+            var pedido = (Stock)obj;
             //Get items del vale
             var vale = pedido.VALE;
-            ItemsVale = await Http.GetFromJsonAsync<Pedidos[]>($"api/Stock/AbriVale/{pedido.VALE}");
+            ItemsVale = await Http.GetFromJsonAsync<Stock[]>($"api/Stock/AbriVale/{pedido.VALE}");
 
             if (ItemsVale != null || ItemsVale.Length > 0)
             {
@@ -462,7 +495,7 @@
     {
 
         var vale = NumVale;
-        ItemsVale = await Http.GetFromJsonAsync<Pedidos[]>($"api/Stock/AbriVale/{vale}");
+        ItemsVale = await Http.GetFromJsonAsync<Stock[]>($"api/Stock/AbriVale/{vale}");
 
         if (ItemsVale == null || ItemsVale.Length == 0)
         {
@@ -480,10 +513,10 @@
         tituloBuscador = $"Listado de Vales";
         ColumnasBuscador = new string[] { "VALE", "FE_MOV", "CG_ART", "DES_ART" };
         var tipoo = SelectedTire.Tipoo;
-        ItemsABuscar = await Http.GetFromJsonAsync<Pedidos[]>($"api/Stock/GetValesByTipo/{tipoo}");
+        ItemsABuscar = await Http.GetFromJsonAsync<Stock[]>($"api/Stock/GetValesByTipo/{tipoo}");
         if (ItemsABuscar == null)
         {
-            ItemsABuscar = new List<Pedidos>().ToArray();
+            ItemsABuscar = new List<Stock>().ToArray();
         }
         PopupBuscadorVisible = true;
         await InvokeAsync(StateHasChanged);
@@ -498,20 +531,6 @@
         tituloBuscador = "Listado de Clientes";
         ColumnasBuscador = new string[] { "CG_CLI", "DES_CLI" };
         ItemsABuscar = await Http.GetFromJsonAsync<Producto[]>("api/Productos");
-        PopupBuscadorVisible = true;
-        await InvokeAsync(StateHasChanged);
-    }
-
-    #endregion
-
-    #region "BUSCAR ORDEN DE COMPRA"
-
-    protected async Task BuscarOCompras()
-    {
-        ItemsABuscar = null;
-        tituloBuscador = "Listado de Ordenes de Compra";
-        ColumnasBuscador = new string[] { "NUMERO", "DES_PROVE" };
-        ItemsABuscar = await Http.GetFromJsonAsync<Compra[]>("api/Compras");
         PopupBuscadorVisible = true;
         await InvokeAsync(StateHasChanged);
     }

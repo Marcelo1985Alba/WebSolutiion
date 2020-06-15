@@ -31,8 +31,8 @@ namespace PCP.Server.Controllers
         //    int numero = 1;
         //    try
         //    {
-        //        if (_context.Pedidos.Count() > 0)
-        //            numero += _context.Pedidos.Where(p => p.CG_CIA == cg_cia_usuario).Max(p => (int)p.VALE);
+        //        if (_context.Stock.Count() > 0)
+        //            numero += _context.Stock.Where(p => p.CG_CIA == cg_cia_usuario).Max(p => (int)p.VALE);
 
         //        return Json(numero);
         //    }
@@ -63,23 +63,23 @@ namespace PCP.Server.Controllers
 
         // GET:   
         [HttpGet("GetValesByTipo/{tipoo}")]
-        public async Task<ActionResult<IEnumerable<Pedidos>>> GetValesByTipo(int tipoo)
+        public async Task<ActionResult<IEnumerable<Stock>>> GetValesByTipo(int tipoo)
         {
-            List<Pedidos> lPedidos = new List<Pedidos>();
+            List<Stock> lStock = new List<Stock>();
             try
             {
                 if (_context.Pedidos.Any())
                 {
-                    lPedidos = await _context.Pedidos.Where(p => p.TIPOO == tipoo && (int)p.VOUCHER == 0
+                    lStock = await _context.Pedidos.Where(p => p.TIPOO == tipoo && (int)p.VOUCHER == 0
                      && p.CG_CIA == cg_cia_usuario).ToListAsync();
                 }
 
-                if (lPedidos == null)
+                if (lStock == null)
                 {
                     return NotFound();
                 }
 
-                return lPedidos;
+                return lStock;
             }
             catch (Exception ex)
             {
@@ -90,50 +90,50 @@ namespace PCP.Server.Controllers
 
         // GET: api/Stock/AbriVale/{vale}
         [HttpGet("AbriVale/{vale}")]
-        public async Task<ActionResult<List<Pedidos>>> AbriVale(int vale)
+        public async Task<ActionResult<List<Stock>>> AbriVale(int vale)
         {
-            List<Pedidos> lPedidos = new List<Pedidos>();
+            List<Stock> lStock = new List<Stock>();
             if (_context.Pedidos.Any())
             {
-                lPedidos = await _context.Pedidos.Where(p=> p.VALE == vale && p.CG_CIA == cg_cia_usuario).ToListAsync();
+                lStock = await _context.Pedidos.Where(p=> p.VALE == vale && p.CG_CIA == cg_cia_usuario).ToListAsync();
             }
 
-            if (lPedidos == null)
+            if (lStock == null)
             {
                 return NotFound();
             }
 
-            return lPedidos;
+            return lStock;
         }
 
         //POST: api/Stock
         //To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<List<Producto>>> PostStock(Pedidos pedidos)
+        public async Task<ActionResult<List<Producto>>> PostStock(Stock Stock)
         {
-            pedidos.USUARIO = "USER";
-            pedidos.CG_CIA = 1;
+            Stock.USUARIO = "USER";
+            Stock.CG_CIA = 1;
 
-            //if (pedidos?.CG_TIRE == 0  || 
-            //    (pedidos.CG_TIRE == 5 && pedidos.CG_PROVE == 0) )
+            //if (Stock?.CG_TIRE == 0  || 
+            //    (Stock.CG_TIRE == 5 && Stock.CG_PROVE == 0) )
             //{
             //    return BadRequest();
             //}
 
-            //if (pedidos.CG_TIRE == 5 && pedidos.CG_PROVE == 0)
+            //if (Stock.CG_TIRE == 5 && Stock.CG_PROVE == 0)
             //{
 
             //}
 
-            _context.Pedidos.Add(pedidos);
+            _context.Pedidos.Add(Stock);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
-                if (RegistroExists(pedidos.REGISTRO))
+                if (RegistroExists(Stock.REGISTRO))
                 {
                     return Conflict();
                 }
@@ -145,7 +145,7 @@ namespace PCP.Server.Controllers
 
             try
             {
-                var ret = CreatedAtAction(nameof(AbriVale), new { vale = pedidos.VALE }, pedidos);
+                var ret = CreatedAtAction(nameof(AbriVale), new { vale = Stock.VALE }, Stock);
                 return ret;
             }
             catch (Exception ex)
@@ -155,7 +155,7 @@ namespace PCP.Server.Controllers
             }
         }
 
-        private bool RegistroExists(decimal registro)
+        private bool RegistroExists(decimal? registro)
         {
             return _context.Pedidos.Any(e => e.REGISTRO == registro);
         }

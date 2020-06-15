@@ -32,7 +32,7 @@ namespace PCP.Server.DataAccess
         //public virtual DbSet<Paises> Paises { get; set; }
         //public virtual DbSet<Paradas> Paradas { get; set; }
         //public virtual DbSet<Pedcli> Pedcli { get; set; }
-        public virtual DbSet<Pedidos> Pedidos { get; set; }
+        public virtual DbSet<Stock> Pedidos { get; set; }
         //public virtual DbSet<PresAnual> PresAnual { get; set; }
         //public virtual DbSet<ProTarea> ProTarea { get; set; }
         //public virtual DbSet<Procun> Procun { get; set; }

@@ -7,19 +7,15 @@ using System.Text;
 
 namespace PCP.Shared.Models
 {
-    [Table("Areas")]
-    public class Area
+    [Table("TipoCelda")]
+    public class TipoCelda
     {
         [Key]
         [ColumnaGridViewAtributo(Name = "Codigo")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int? CG_AREA { get; set; }
-        [ColumnaGridViewAtributo(Name = "Nombre del área")]
-        public string DES_AREA { get; set; }
-        [ColumnaGridViewAtributo(Name = "Tipo de área")]
-        public int? CG_TIPOAREA { get; set; }
-        [ColumnaGridViewAtributo(Name = "?Area del Proveedor")]
-        public int? CG_PROVE { get; set; }
+        public int? CG_TIPOCELDA { get; set; }
+        [ColumnaGridViewAtributo(Name = "Tipo celda")]
+        public string DES_TIPOCELDA { get; set; }
         [ColumnaGridViewAtributo(Name = "Compañía")]
         public int? CG_CIA { get; set; }
 

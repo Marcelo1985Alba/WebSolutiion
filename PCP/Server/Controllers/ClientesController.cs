@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PCP.Server.DataAccess;
-using PCP.Shared.Models;
+using SupplyChain.Shared.Models;
 using System.Data;
 
 namespace PCP.Server.Controllers

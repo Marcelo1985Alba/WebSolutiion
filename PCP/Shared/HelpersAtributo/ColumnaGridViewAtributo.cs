@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PCP.Shared.Models
+namespace SupplyChain.Shared.Models
 {
     /// <summary>
     /// Especial para las grillas de Devexpress y poder cambiar el nombre 

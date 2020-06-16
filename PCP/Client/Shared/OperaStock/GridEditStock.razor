@@ -35,10 +35,10 @@ else
                         <DxDataGridComboBoxColumn Data="@Unidades" Field="@nameof(Stock.UNIDA)"
                             Caption="Unidad A">
                         </DxDataGridComboBoxColumn>
-                        <DxDataGridColumn Field="@nameof(Stock.IMPORTE1)" Caption="Precio Unit."></DxDataGridColumn>
+                        @*<DxDataGridColumn Field="@nameof(Stock.IMPORTE1)" Caption="Precio Unit."></DxDataGridColumn>
                         <DxDataGridColumn Field="@nameof(Stock.IMPORTE2)" Caption="Importe2"></DxDataGridColumn>
                         <DxDataGridColumn Field="@nameof(Stock.IMPORTE3)" Caption="Importe3"></DxDataGridColumn>
-                        <DxDataGridColumn Field="@nameof(Stock.IMPORTE4)" Caption="Importe4"></DxDataGridColumn>
+                        <DxDataGridColumn Field="@nameof(Stock.IMPORTE4)" Caption="Importe4"></DxDataGridColumn>*@
                         <DxDataGridColumn Field="@nameof(Stock.DESPACHO)" Caption="Despacho"></DxDataGridColumn>
                         <DxDataGridColumn Field="@nameof(Stock.SERIE)" Caption="Serie"></DxDataGridColumn>
                         <DxDataGridColumn Field="@nameof(Stock.LOTE)" Caption="Lote"></DxDataGridColumn>
@@ -155,6 +155,7 @@ else
 
     [Parameter]
     public EventCallback<Stock> onGuardar { get; set; }
+
 
     DxDataGrid<Stock> grid;
     Unidad[] Unidades = new List<Unidad>().ToArray();
@@ -294,16 +295,20 @@ else
         {
 
 
+            //envio item stock para guardar en la pantall operarcion 
+            //para poder agregarle los datos de la cabecera: vale, ocompra etc
             await onGuardar.InvokeAsync(EditContext.DataItem);
 
-            //if (EditContext.IsNewRow)
-            //{
-            //    //envio item pedido para guardar a Stock operarcion para poder agregarle los datos de la cabecera: vale, ocompra etc
+            //agregar nuero de registro una vez guardado
+            //EditContext.DataItem.REGISTRO = 0;
 
-            //    var nuevoItem = (new Stock[] { EditContext.DataItem });
-            //    //lStock = (new Stock[] { EditContext.DataItem }).Concat(lStock);
-            //    DataSource = nuevoItem.Concat(DataSource).ToArray();
-            //}
+            if (EditContext.IsNewRow)
+            {
+                EditContext.IsNewRow = false;
+                var nuevoItem = (new Stock[] { EditContext.DataItem });
+                //lStock = (new Stock[] { EditContext.DataItem }).Concat(lStock);
+                DataSource = nuevoItem.Concat(DataSource).ToArray();
+            }
 
 
             EditContext = null;

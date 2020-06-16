@@ -1,8 +1,8 @@
-﻿using PCP.Shared.Models;
+﻿using SupplyChain.Shared.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PCP.Shared.Models
+namespace SupplyChain.Shared.Models
 {
     [Table("Depos")]
     public class Deposito

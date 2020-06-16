@@ -1,7 +1,7 @@
 ﻿@if (Visible)
 {
     <div class="alert @ObtenerCssAlert() alert-dismissible fade show" role="alert">
-        <button type="button" @  class="close" aria-label="Close">
+        <button type="button" @onclick="@(()=> Visible = false)"  class="close" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
         <strong>@MensajeCabecera</strong> @Mensaje
@@ -12,7 +12,7 @@
 @code {
     private string cssAlert;
     private string MensajeCabecera;
-    [Parameter] public PCP.Shared.Enum.TipoAlerta Tipo { get; set; } = PCP.Shared.Enum.TipoAlerta.danger;
+    [Parameter] public SupplyChain.Shared.Enum.TipoAlerta Tipo { get; set; } = SupplyChain.Shared.Enum.TipoAlerta.danger;
     [Parameter] public bool Visible { get; set; } = false;
     [Parameter] public string Mensaje { get; set; } = "";
 
@@ -21,11 +21,11 @@
     {
         switch (Tipo)
         {
-            case PCP.Shared.Enum.TipoAlerta.danger:
+            case SupplyChain.Shared.Enum.TipoAlerta.danger:
                 cssAlert = "alert-danger";
                 MensajeCabecera = "Error!";
                 break;
-            case PCP.Shared.Enum.TipoAlerta.success:
+            case SupplyChain.Shared.Enum.TipoAlerta.success:
                 cssAlert = "alert-success";
                 MensajeCabecera = "Correctamente Guardado!";
                 break;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PCP.Shared.Models
+namespace SupplyChain.Shared.Models
 {
     public partial class CalendarioFestivos
     {

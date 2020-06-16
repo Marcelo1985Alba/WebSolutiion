@@ -1,5 +1,4 @@
 ﻿@page "/cliente"
-@using PCP.Shared.Models
 @using System.Data
 @using DevExpress.Blazor
 @inject IJSRuntime JsRuntime
@@ -37,16 +36,16 @@ else
                     </HeaderCellTemplate>
                     <CellTemplate>
                         <a class="oi oi-pencil a" style="opacity: 0.5;" @onclick="@(() => dataGrilla.StartRowEdit(context))" href="javascript:void(0);"></a>
-                        <a class="oi oi-x a" style="opacity: 0.5;" @onclick="@(() => BorrarItem(context as PCP.Shared.Models.Cliente))" href="javascript:void(0);"></a>
+                        <a class="oi oi-x a" style="opacity: 0.5;" @onclick="@(() => BorrarItem(context as SupplyChain.Shared.Models.Cliente))" href="javascript:void(0);"></a>
                     </CellTemplate>
                 </DxDataGridCommandColumn>                
-                <DxDataGridColumn Field="@nameof(PCP.Shared.Models.Cliente.CG_CLI)" Caption="Código" Width="100px" TextAlignment="DataGridTextAlign.Center"></DxDataGridColumn>
-                <DxDataGridColumn Field="@nameof(PCP.Shared.Models.Cliente.DES_CLI)" Width="500px"></DxDataGridColumn>
-                @*<DxDataGridColumn Field="@nameof(PCP.Shared.Models.Cliente.CUIT)" Caption="CUIT" Width="150px"></DxDataGridColumn>*@
+                <DxDataGridColumn Field="@nameof(SupplyChain.Shared.Models.Cliente.CG_CLI)" Caption="Código" Width="100px" TextAlignment="DataGridTextAlign.Center"></DxDataGridColumn>
+                <DxDataGridColumn Field="@nameof(SupplyChain.Shared.Models.Cliente.DES_CLI)" Width="500px"></DxDataGridColumn>
+                @*<DxDataGridColumn Field="@nameof(SupplyChain.Shared.Models.Cliente.CUIT)" Caption="CUIT" Width="150px"></DxDataGridColumn>*@
                 @*<DxDataGridComboBoxColumn AllowGroup="true" 
                                           TextFieldName="@nameof(Provincia.DES_PROV)"
                                           ValueFieldName="@nameof(Provincia.CG_PROV)"
-                                          Field="@nameof(PCP.Shared.Models.Cliente.cg)"
+                                          Field="@nameof(SupplyChain.Shared.Models.Cliente.cg)"
                                           Caption="Provincia" Width="150px"
                                           Data="@dbProvincias" />*@
             </DxDataGrid>
@@ -56,8 +55,8 @@ else
 
 @code
 {
-    DevExpress.Blazor.DxDataGrid<PCP.Shared.Models.Cliente> dataGrilla;
-    List<PCP.Shared.Models.Cliente> dbClientes;
+    DevExpress.Blazor.DxDataGrid<SupplyChain.Shared.Models.Cliente> dataGrilla;
+    List<SupplyChain.Shared.Models.Cliente> dbClientes;
     List<Provincia> dbProvincias;
 
     protected override async Task OnInitializedAsync()
@@ -67,28 +66,28 @@ else
 
     protected async Task Refrescar()
     {
-        PCP.Shared.Models.Cliente[] xClientes = await Http.GetFromJsonAsync<PCP.Shared.Models.Cliente[]>("api/Clientes");
-        dbClientes = (xClientes as IEnumerable<PCP.Shared.Models.Cliente>).ToList();
+        SupplyChain.Shared.Models.Cliente[] xClientes = await Http.GetFromJsonAsync<SupplyChain.Shared.Models.Cliente[]>("api/Clientes");
+        dbClientes = (xClientes as IEnumerable<SupplyChain.Shared.Models.Cliente>).ToList();
 
         Provincia[] xProvicncias = await Http.GetFromJsonAsync<Provincia[]>("api/Provincias");
         dbProvincias = (xProvicncias as IEnumerable<Provincia>).ToList();
     }
 
-    async Task OnRowUpdating(PCP.Shared.Models.Cliente dataItem, IDictionary<string, object> newValue)
+    async Task OnRowUpdating(SupplyChain.Shared.Models.Cliente dataItem, IDictionary<string, object> newValue)
     {
         try
         {
-            if (newValue.ContainsKey(nameof(PCP.Shared.Models.Cliente.DES_CLI)))
+            if (newValue.ContainsKey(nameof(SupplyChain.Shared.Models.Cliente.DES_CLI)))
             {
-                dataItem.DES_CLI = (string)newValue[nameof(PCP.Shared.Models.Cliente.DES_CLI)];
+                dataItem.DES_CLI = (string)newValue[nameof(SupplyChain.Shared.Models.Cliente.DES_CLI)];
             }
-            //if (newValue.ContainsKey(nameof(PCP.Shared.Models.Cliente.cui)))
+            //if (newValue.ContainsKey(nameof(SupplyChain.Shared.Models.Cliente.cui)))
             //{
-            //    dataItem.CUIT = (string)newValue[nameof(PCP.Shared.Models.Cliente.CUIT)];
+            //    dataItem.CUIT = (string)newValue[nameof(SupplyChain.Shared.Models.Cliente.CUIT)];
             //}
-            //if (newValue.ContainsKey(nameof(PCP.Shared.Models.Cliente.)))
+            //if (newValue.ContainsKey(nameof(SupplyChain.Shared.Models.Cliente.)))
             //{
-            //    dataItem.CG_PROV = (int)((Provincia)newValue[nameof(PCP.Shared.Models.Cliente.CG_PROV)]).CG_PROV;
+            //    dataItem.CG_PROV = (int)((Provincia)newValue[nameof(SupplyChain.Shared.Models.Cliente.CG_PROV)]).CG_PROV;
             //}
             await Http.PutAsJsonAsync($"api/Clientes/{dataItem.CG_CLI}", dataItem);
             //foreach (var field in newValue.Keys)
@@ -116,28 +115,28 @@ else
     {
         try
         {
-            PCP.Shared.Models.Cliente dataItem = new PCP.Shared.Models.Cliente();
-            //if (newValue.ContainsKey(nameof(PCP.Shared.Models.Cliente.CgCli)))
+            SupplyChain.Shared.Models.Cliente dataItem = new SupplyChain.Shared.Models.Cliente();
+            //if (newValue.ContainsKey(nameof(SupplyChain.Shared.Models.Cliente.CgCli)))
             //{
-            //    dataItem.CgCli = (int)newValue[nameof(PCP.Shared.Models.Cliente.CgCli)];
+            //    dataItem.CgCli = (int)newValue[nameof(SupplyChain.Shared.Models.Cliente.CgCli)];
             //}
-            if (newValue.ContainsKey(nameof(PCP.Shared.Models.Cliente.DES_CLI)))
+            if (newValue.ContainsKey(nameof(SupplyChain.Shared.Models.Cliente.DES_CLI)))
             {
-                dataItem.DES_CLI = (string)newValue[nameof(PCP.Shared.Models.Cliente.DES_CLI)];
+                dataItem.DES_CLI = (string)newValue[nameof(SupplyChain.Shared.Models.Cliente.DES_CLI)];
             }
-            //if (newValue.ContainsKey(nameof(PCP.Shared.Models.Cliente.CUIT)))
+            //if (newValue.ContainsKey(nameof(SupplyChain.Shared.Models.Cliente.CUIT)))
             //{
-            //    dataItem.CUIT = (string)newValue[nameof(PCP.Shared.Models.Cliente.CUIT)];
+            //    dataItem.CUIT = (string)newValue[nameof(SupplyChain.Shared.Models.Cliente.CUIT)];
             //}
-            //if (newValue.ContainsKey(nameof(PCP.Shared.Models.Cliente.CG_PROV)))
+            //if (newValue.ContainsKey(nameof(SupplyChain.Shared.Models.Cliente.CG_PROV)))
             //{
             //    try
             //    {
-            //        dataItem.CG_PROV = (int)newValue[nameof(PCP.Shared.Models.Cliente.CG_PROV)];
+            //        dataItem.CG_PROV = (int)newValue[nameof(SupplyChain.Shared.Models.Cliente.CG_PROV)];
             //    }
             //    catch (Exception ex)
             //    {
-            //        dataItem.CG_PROV = (int)((Provincia)newValue[nameof(PCP.Shared.Models.Cliente.CG_PROV)]).CG_PROV;
+            //        dataItem.CG_PROV = (int)((Provincia)newValue[nameof(SupplyChain.Shared.Models.Cliente.CG_PROV)]).CG_PROV;
             //    }
             //}
             dbClientes.Add(dataItem);
@@ -149,7 +148,7 @@ else
         }
     }
 
-    async Task BorrarItem(PCP.Shared.Models.Cliente dataItem)
+    async Task BorrarItem(SupplyChain.Shared.Models.Cliente dataItem)
     {
         try
         {
@@ -183,7 +182,7 @@ else
         }
     }
 
-    void OnHtmlRowDecoration(DataGridHtmlRowDecorationEventArgs<PCP.Shared.Models.Cliente> eventArgs)
+    void OnHtmlRowDecoration(DataGridHtmlRowDecorationEventArgs<SupplyChain.Shared.Models.Cliente> eventArgs)
     {
         if (eventArgs.VisibleIndex % 2 == 1)
         {
@@ -192,11 +191,11 @@ else
         }
     }
 
-    void OnHtmlDataCellDecoration(DataGridHtmlDataCellDecorationEventArgs<PCP.Shared.Models.Cliente> eventArgs)
+    void OnHtmlDataCellDecoration(DataGridHtmlDataCellDecorationEventArgs<SupplyChain.Shared.Models.Cliente> eventArgs)
     {
         //eventArgs.CssClass += " border-0";
 
-        //if (eventArgs.Field == nameof(PCP.Shared.Models.Cliente.DesCli))
+        //if (eventArgs.Field == nameof(SupplyChain.Shared.Models.Cliente.DesCli))
         //{
         //    if (eventArgs.RowVisibleIndex % 2 == 1)
         //        eventArgs.Style += " background-color: rgb(169, 148, 200); color: black;";

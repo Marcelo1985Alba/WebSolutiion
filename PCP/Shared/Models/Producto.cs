@@ -1,9 +1,8 @@
-﻿using PCP.Shared.Models;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PCP.Shared.Models
+namespace SupplyChain.Shared.Models
 {
     [Table("Prod")]
     public class Producto

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
-namespace PCP.Shared.Models
+namespace SupplyChain.Shared.Models
 {
-	[Table("Pedidos")]
+    [Table("Pedidos")]
 	public class PedidosBak
 	{
 		[ColumnaGridViewAtributo(Name ="Vale")]

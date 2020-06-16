@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PCP.Shared.Enum
+namespace SupplyChain.Shared.Enum
 {
     public enum TipoAlerta
     {

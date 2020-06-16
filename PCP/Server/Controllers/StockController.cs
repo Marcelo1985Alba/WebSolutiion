@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PCP.Server.DataAccess;
-using PCP.Shared.Models;
+using SupplyChain.Shared.Models;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -78,7 +78,7 @@ namespace PCP.Server.Controllers
             List<Stock> lStock = new List<Stock>();
             if (_context.Pedidos.Any())
             {
-                lStock = await _context.Pedidos.Where(p=> p.VALE == vale && p.CG_CIA == cg_cia_usuario).ToListAsync();
+                lStock = await _context.Pedidos.Where(p => p.VALE == vale && p.CG_CIA == cg_cia_usuario).ToListAsync();
             }
 
             if (lStock == null)
@@ -123,10 +123,10 @@ namespace PCP.Server.Controllers
         //To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<List<Producto>>> PostStock(Stock Stock)
+        public async Task<ActionResult<string>> PostStock([FromBody] Stock stock)
         {
-            Stock.USUARIO = "USER";
-            Stock.CG_CIA = 1;
+            stock.USUARIO = "USER";
+            stock.CG_CIA = 1;
 
             //if (Stock?.CG_TIRE == 0  || 
             //    (Stock.CG_TIRE == 5 && Stock.CG_PROVE == 0) )
@@ -139,14 +139,14 @@ namespace PCP.Server.Controllers
 
             //}
 
-            _context.Pedidos.Add(Stock);
+            _context.Pedidos.Add(stock);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
-                if (RegistroExists(Stock.REGISTRO))
+                if (RegistroExists(stock.REGISTRO))
                 {
                     return Conflict();
                 }
@@ -158,8 +158,9 @@ namespace PCP.Server.Controllers
 
             try
             {
-                var ret = CreatedAtAction(nameof(AbriVale), new { vale = Stock.VALE }, Stock);
-                return ret;
+                //var ret = CreatedAtAction(nameof(AbriVale), new { vale = Stock.VALE }, Stock);
+                //return ret;
+                return Ok(stock.REGISTRO.ToString());
             }
             catch (Exception ex)
             {

@@ -1,7 +1,7 @@
 ﻿@page "/opestock"
 @inject IJSRuntime JsRuntime
 @inject HttpClient Http
-@using Newtonsoft.Json
+@using System.Text.Json
 <head>
     ...
     <link href="_content/DevExpress.Blazor/dx-blazor.css" rel="stylesheet" />
@@ -23,7 +23,7 @@
 
 </div>
 <hr />
-
+<Alerta Mensaje="@Mensaje" Tipo="TipoAlert" Visible="@MostrarAlerta"/>
 
 <DxFormLayout>
     @*SELECCION DE TIPO DE REMITO*@
@@ -392,29 +392,47 @@
         stock.IMPORTE1 = 0;
         stock.IMPORTE6 = 0;
         HttpResponseMessage response = null;
+        Mensaje = $"Nuevo Vale Nro: {stock.VALE}";
         if (stock.REGISTRO == null)
         {
             response = await Http.PostAsJsonAsync("api/Stock", stock);
+
         }
         else
         {
             var registro = stock.REGISTRO;
             response = await Http.PutAsJsonAsync($"api/Stock/PutStock/{registro}", stock);
+            Mensaje += " (Actualizado)";
         }
 
-        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+
+
+        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest ||
+        response.StatusCode == System.Net.HttpStatusCode.NotFound ||
+        response.StatusCode == System.Net.HttpStatusCode.Conflict)
         {
-            Console.WriteLine("Error 400:" + response.RequestMessage.Content.ReadAsStringAsync());
+            var mensServidor = await response.RequestMessage.Content.ReadAsStringAsync();
+
+            Console.WriteLine($"Error: {mensServidor}" );
             //Mostrar Alerta
+            MostrarAlerta = true;
+            TipoAlert = TipoAlerta.danger;
+            Mensaje = $"{mensServidor}";
         }
         else
         {
-            await AbrirVale();
-            //MostrarAlerta = true;
-            //Mensaje = $"Vale Nro: {stock.VALE}";
-            //TipoAlert = TipoAlerta.success;
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                //
+                var mensServidor = await response.Content.ReadAsStringAsync();
+                await InvokeAsync(StateHasChanged);
+                Console.WriteLine($"Registro: {mensServidor}");
+            }
+            //await AbrirVale();
+            MostrarAlerta = true;
+            Mensaje = $"Vale Nro: {stock.VALE}";
+            TipoAlert = TipoAlerta.success;
         }
-
 
     }
 

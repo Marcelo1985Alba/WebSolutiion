@@ -172,17 +172,18 @@
     </DxFormLayoutItem>
 </DxFormLayout>
 
-<div class="container-fluid">
-    <GridEditStock DataSource="@ItemsVale" PermiteAgregar="@PermiteAgregarItem"
-                   PermiteEditar="@PermiteEditarItem" PermiteEliminar="@PermiteEliminarItem"
-                   onGuardar="onGuardarPedido" />
-</div>
-
+<CascadingValue Value="@RegistroGenerado">
+    <div class="container-fluid">
+        <GridEditStock DataSource="@ItemsVale" PermiteAgregar="@PermiteAgregarItem"
+                       PermiteEditar="@PermiteEditarItem" PermiteEliminar="@PermiteEliminarItem"
+                       onGuardar="onGuardarPedido" />
+    </div>
+</CascadingValue>
 <BuscadorEmergente Titulo=@tituloBuscador Visible="@PopupBuscadorVisible" DataSource="@ItemsABuscar"
                    Columnas="@ColumnasBuscador" onObjetoSeleccionado="onObjectSelected" />
 
 @code {
-    int cg_cia = 1;
+    decimal? RegistroGenerado;
     bool DisableCssClass { get => selectedTire == null ? true : false; }
     int NumVale { get; set; }
     bool MostrarAlerta = false;
@@ -411,7 +412,7 @@
         response.StatusCode == System.Net.HttpStatusCode.NotFound ||
         response.StatusCode == System.Net.HttpStatusCode.Conflict)
         {
-            var mensServidor = await response.RequestMessage.Content.ReadAsStringAsync();
+            var mensServidor = await response.Content.ReadAsStringAsync();
 
             Console.WriteLine($"Error: {mensServidor}" );
             //Mostrar Alerta
@@ -427,10 +428,11 @@
                 var mensServidor = await response.Content.ReadAsStringAsync();
                 await InvokeAsync(StateHasChanged);
                 Console.WriteLine($"Registro: {mensServidor}");
+                RegistroGenerado = Decimal.Parse(mensServidor);
             }
-            //await AbrirVale();
+            //No abrir vale al guardar pues se perden los items: await AbrirVale();
             MostrarAlerta = true;
-            Mensaje = $"Vale Nro: {stock.VALE}";
+            //Mensaje = $"Vale Nro: {stock.VALE}";
             TipoAlert = TipoAlerta.success;
         }
 

@@ -153,9 +153,8 @@ else
     [Parameter]
     public bool PermiteEliminar { get; set; } = false;
 
-    [Parameter]
-    public EventCallback<Stock> onGuardar { get; set; }
-
+    [Parameter] public EventCallback<Stock> onGuardar { get; set; }
+    [CascadingParameter] public decimal? RegistroGenerado { get; set; }
 
     DxDataGrid<Stock> grid;
     Unidad[] Unidades = new List<Unidad>().ToArray();
@@ -300,7 +299,7 @@ else
             await onGuardar.InvokeAsync(EditContext.DataItem);
 
             //agregar nuero de registro una vez guardado
-            //EditContext.DataItem.REGISTRO = 0;
+            EditContext.DataItem.REGISTRO = RegistroGenerado;
 
             if (EditContext.IsNewRow)
             {

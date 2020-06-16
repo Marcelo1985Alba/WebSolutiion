@@ -91,7 +91,7 @@ namespace PCP.Server.Controllers
 
         // PUT: api/Stock/PutStock/123729
         [HttpPut("PutStock/{registro}")]
-        public async Task<IActionResult> PutStock(decimal registro, Stock stock)
+        public async Task<ActionResult<string>> PutStock(decimal registro, Stock stock)
         {
             if (registro != stock.REGISTRO)
             {
@@ -116,7 +116,7 @@ namespace PCP.Server.Controllers
                 }
             }
 
-            return Ok(stock);
+            return Ok(stock.REGISTRO.ToString());
         }
 
         //POST: api/Stock

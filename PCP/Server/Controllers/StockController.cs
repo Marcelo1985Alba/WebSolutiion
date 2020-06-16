@@ -26,23 +26,6 @@ namespace PCP.Server.Controllers
         }
 
         [HttpGet("GetMaxVale")]
-        //public IActionResult GetMaxVale()
-        //{
-        //    int numero = 1;
-        //    try
-        //    {
-        //        if (_context.Stock.Count() > 0)
-        //            numero += _context.Stock.Where(p => p.CG_CIA == cg_cia_usuario).Max(p => (int)p.VALE);
-
-        //        return Json(numero);
-        //    }
-
-        //    catch (Exception EX)
-        //    {
-
-        //        throw;
-        //    }
-        //}
         public async Task<IActionResult> GetMaxVale()
         {
             int numero = 1;
@@ -104,6 +87,36 @@ namespace PCP.Server.Controllers
             }
 
             return lStock;
+        }
+
+        // PUT: api/Stock/PutStock/123729
+        [HttpPut("PutStock/{registro}")]
+        public async Task<IActionResult> PutStock(decimal registro, Stock stock)
+        {
+            if (registro != stock.REGISTRO)
+            {
+                return BadRequest("Registro Incorrecto");
+            }
+
+            _context.Entry(stock).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RegistroExists(registro))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Ok(stock);
         }
 
         //POST: api/Stock

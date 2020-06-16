@@ -24,7 +24,7 @@ namespace PCP.Shared.Models
         [ColumnaGridViewAtributo(Name = "Unidad comercial")]
         public string UNIDSEG { get; set; }
         [ColumnaGridViewAtributo(Name = "Peso")]
-        public string PESO { get; set; }
+        public decimal PESO { get; set; }
         [ColumnaGridViewAtributo(Name = "Unidad peso")]
         public string UNIDPESO { get; set; }
         [ColumnaGridViewAtributo(Name = "Especificaciones")]
@@ -62,7 +62,7 @@ namespace PCP.Shared.Models
         [ColumnaGridViewAtributo(Name = "Tipo área fabricación")]
         public int? CG_TIPOAREA { get; set; }
         [ColumnaGridViewAtributo(Name = "Cuenta contable")]
-        public decimal? CG_CUENT { get; set; }
+        public decimal? CG_CUENT1 { get; set; }
         [ColumnaGridViewAtributo(Name = "Unidad equivalente costo")]
         public decimal? UNIDEQUI { get; set; }
         [ColumnaGridViewAtributo(Name = "Costo ultima compra")]
@@ -72,11 +72,11 @@ namespace PCP.Shared.Models
         [ColumnaGridViewAtributo(Name = "Costo ultima compra")]
         public decimal? COSTOUC1 { get; set; }
         [ColumnaGridViewAtributo(Name = "Fecha ultima compra")]
-        public decimal? FE_UC { get; set; }
+        public DateTime? FE_UC { get; set; }
         [ColumnaGridViewAtributo(Name = "Usuario")]
         public string USUARIO { get; set; }
         [ColumnaGridViewAtributo(Name = "Fecha registro")]
-        public DateTime FE_REG { get; set; }
+        public DateTime? FE_REG { get; set; }
         [ColumnaGridViewAtributo(Name = "Compañía")]
         public int? CG_CIA { get; set; }
 

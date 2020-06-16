@@ -34,7 +34,10 @@
     </DxFormLayoutItem>
     <DxFormLayoutItem Caption="Orden de Fabrición" ColSpanMd="3" ColSpanXs="6">
         <Template>
-            <div class="form-row">
+            <BuscadorOFab EsSoloLectura="OFSoloLectura" HabilitaBotonBusqueda="HabilitaBotonOF"
+                          MostraBotonBusqueda="true" MostrarSpin="false"
+                          Valor="@OrdenFabricacion" OnOFSeleccionada="onObjectSelected"/>
+            @*<div class="form-row">
                 <div class="col-10">
                     @if (selectedTire?.Tipoo == 5)
                     {
@@ -52,7 +55,7 @@
                         ...
                     </button>
                 </div>
-            </div>
+            </div>*@
         </Template>
     </DxFormLayoutItem>
     @*BUSCAR OF*@
@@ -65,26 +68,6 @@
                                      Valor="@OCompra" OnOCSeleccionada="onObjectSelected" />
                 </div>
             </div>
-            
-            @*<div class="form-row">
-            <div class="col-10">
-                @if (selectedTire?.Tipoo == 5)
-                {
-                    <DxSpinEdit @bind-Value="@OCompra" ShowSpinButtons="false"></DxSpinEdit>
-                }
-                else
-                {
-                    <DxSpinEdit Value="0" ShowSpinButtons="false" ReadOnly="true"></DxSpinEdit>
-                }
-
-            </div>
-            <div class="col-2">
-                <button class="btn btn-outline-info btn-sm" @onclick="@(async ()=> await BuscarOCompras())">
-                    ...
-                </button>
-
-            </div>
-        </div>*@
         </Template>
     </DxFormLayoutItem>
 
@@ -121,7 +104,7 @@
         <Template>
             <div class="form-row">
                 <div class="col-10">
-                    @if (selectedTire?.Tipoo == 5)
+                    @if (selectedTire?.Tipoo != 5)
                     {
                         
                         <DxSpinEdit @bind-Value="@Pedido"></DxSpinEdit>
@@ -216,7 +199,8 @@
     bool OCSoloLectura = true;
     bool HabilitaBotonOC = false;
 
-
+    bool OFSoloLectura = true;
+    bool HabilitaBotonOF = false;
 
     Producto selectedProducto;
     public Producto SelectedProducto
@@ -265,13 +249,6 @@
 
     void OnChanged() { InvokeAsync(StateHasChanged); }
 
-    protected override void OnInitialized()
-    {
-
-
-        Console.WriteLine("OnInitialized");
-    }
-
     protected override async Task OnInitializedAsync()
     {
         NumVale = await Http.GetFromJsonAsync<int>($"api/Stock/GetMaxVale");
@@ -280,12 +257,7 @@
         selectedDepositoIngreso = Depositos[0];
 
         await InvokeAsync(StateHasChanged);
-        Console.WriteLine("OnInitializedAsync");
-
-
         ItemsVale = new List<Stock>().ToArray();
-        //ItemsVale = await Http.GetFromJsonAsync<Stock[]>($"api/Stock/AbriVale/-1");
-
     }
 
     void SelectedTireChanged(Tire tire)
@@ -306,11 +278,15 @@
         {
             HabilitaBotonOC = true;
             OCSoloLectura = false;
+            HabilitaBotonOF = false;
+            OFSoloLectura = true;
         }
         else
         {
             HabilitaBotonOC = false;
             OCSoloLectura = true;
+            HabilitaBotonOF = true;
+            OFSoloLectura = false;
         }
 
         InvokeAsync(StateHasChanged);
@@ -352,69 +328,80 @@
     private bool popupVisible = false;
     bool PopupVisible { get => popupVisible; set { popupVisible = value; InvokeAsync(StateHasChanged); } }
 
-    private async Task onGuardarPedido(Stock Stock)
+    private async Task onGuardarPedido(Stock stock)
     {
-        if (Stock.DESPACHO == null)
+        if (stock.DESPACHO == null)
         {
-            Stock.DESPACHO = "";
+            stock.DESPACHO = "";
         }
-        if (Stock.LOTE == null)
+        if (stock.LOTE == null)
         {
-            Stock.LOTE = "";
+            stock.LOTE = "";
         }
-        if (Stock.SERIE == null)
+        if (stock.SERIE == null)
         {
-            Stock.SERIE = "";
+            stock.SERIE = "";
         }
 
-        Stock.NUMOCI = 0;
-        Stock.FE_MOV = DateTime.Now;
-        Stock.VALE = NumVale;
-        Stock.REMITO = Remito;
-        Stock.CG_CLI = 0;
-        Stock.CG_PROVE = Cg_CLI_Cg_PROVE;
-        Stock.DES_PROVE = DescripcionPro.Trim();
-        Stock.FLAG = 0;
-        Stock.AVISO = "";
-        Stock.CG_ORDF = 0;
-        Stock.OCOMPRA = OCompra;
-        Stock.CG_DEP = SelectedDepositoIngreso.CG_DEP;
-        Stock.VOUCHER = 0;
-        Stock.TIPOO = selectedTire.Tipoo;
-        Stock.AVISO = "RECEPCION DE INSUMOS DE PROVEEDOR"; /*VERIFICAR TIPOO*/
-        Stock.TIPO = "";
-        Stock.CG_POSTA = "";
-        Stock.COMPROB = "";
-        Stock.CG_DEN = 0;
-        Stock.DESCUENTO = 0;
-        Stock.CUIT = "";
-        Stock.DES_CLI = "";
-        Stock.DIRECC = "";
-        Stock.DIRENT = "";
-        Stock.FACTURA = "";
-        Stock.LEYENDA = "";
-        Stock.LOCALIDAD = "";
-        Stock.MONEDA = "";
-        Stock.OBS1 = "";
-        Stock.OBS2 = "";
-        Stock.OBS3 = "";
-        Stock.OBS4 = "";
-        Stock.OBSERITEM = "";
-        Stock.OBSERVACIONES = "";
-        Stock.ORCO = "";
-        Stock.UBICACION = "";
-        Stock.UNIDA = "";
-        Stock.ENTRREAL = DateTime.UtcNow;
-        Stock.PEDIDO = 0;
-        Stock.IVA = 0;
-        Stock.BONIFIC = 0;
-        Stock.CANTENT = 0;
-        Stock.CANTENTA = 0;
-        Stock.CANTPED = 0;
-        Stock.STOCKA = 0;
-        Stock.VA_INDIC = 0;
-        Stock.IMPORTE6 = 0;
-        var response = await Http.PostAsJsonAsync("api/Stock", Stock);
+        stock.NUMOCI = 0;
+        stock.FE_MOV = DateTime.Now;
+        stock.VALE = NumVale;
+        stock.REMITO = Remito;
+        stock.CG_CLI = 0;
+        stock.CG_PROVE = Cg_CLI_Cg_PROVE;
+        stock.DES_PROVE = DescripcionPro.Trim();
+        stock.FLAG = 0;
+        stock.AVISO = "";
+        stock.CG_ORDF = 0;
+        stock.OCOMPRA = OCompra;
+        stock.CG_DEP = SelectedDepositoIngreso.CG_DEP;
+        stock.VOUCHER = 0;
+        stock.TIPOO = selectedTire.Tipoo;
+        stock.AVISO = "RECEPCION DE INSUMOS DE PROVEEDOR"; /*VERIFICAR TIPOO*/
+        stock.TIPO = "";
+        stock.CG_POSTA = "";
+        stock.COMPROB = "";
+        stock.CG_DEN = 0;
+        stock.DESCUENTO = 0;
+        stock.CUIT = "";
+        stock.DES_CLI = "";
+        stock.DIRECC = "";
+        stock.DIRENT = "";
+        stock.FACTURA = "";
+        stock.LEYENDA = "";
+        stock.LOCALIDAD = "";
+        stock.MONEDA = "";
+        stock.OBS1 = "";
+        stock.OBS2 = "";
+        stock.OBS3 = "";
+        stock.OBS4 = "";
+        stock.OBSERITEM = "";
+        stock.OBSERVACIONES = "";
+        stock.ORCO = "";
+        stock.UBICACION = "";
+        stock.UNIDA = "";
+        stock.ENTRREAL = DateTime.UtcNow;
+        stock.PEDIDO = 0;
+        stock.IVA = 0;
+        stock.BONIFIC = 0;
+        stock.CANTENT = 0;
+        stock.CANTENTA = 0;
+        stock.CANTPED = 0;
+        stock.STOCKA = 0;
+        stock.VA_INDIC = 0;
+        stock.IMPORTE1 = 0;
+        stock.IMPORTE6 = 0;
+        HttpResponseMessage response = null;
+        if (stock.REGISTRO == null)
+        {
+            response = await Http.PostAsJsonAsync("api/Stock", stock);
+        }
+        else
+        {
+            var registro = stock.REGISTRO;
+            response = await Http.PutAsJsonAsync($"api/Stock/PutStock/{registro}", stock);
+        }
+
         if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
             Console.WriteLine("Error 400:" + response.RequestMessage.Content.ReadAsStringAsync());
@@ -424,7 +411,7 @@
         {
             await AbrirVale();
             //MostrarAlerta = true;
-            //Mensaje = $"Vale Nro: {Stock.VALE}";
+            //Mensaje = $"Vale Nro: {stock.VALE}";
             //TipoAlert = TipoAlerta.success;
         }
 
@@ -435,11 +422,11 @@
     {
         ItemsVale = null;
         PopupBuscadorVisible = false;
+        List<Stock> lStock = new List<Stock>();
         var tipoEntidad = obj.GetType().Name;
         if (tipoEntidad == "Compra")
         {
             var compra = (Compra)obj;
-            List<Stock> lStock = new List<Stock>();
             var ItemsCompras = await Http.GetFromJsonAsync<Compra[]>($"api/Compras/GetCompraByNumero/{compra.NUMERO}");
             //Cargar los item de compras en los items de items para guardar vale
             foreach (var item in ItemsCompras)
@@ -476,7 +463,34 @@
             }
 
         }
+        if (tipoEntidad == "Programa")
+        {
+            var programa = (Programa)obj;
+            var ItemsPrograma = await Http.GetFromJsonAsync<Programa[]>($"api/Programas/GetProgramaByOF/{programa.CG_ORDF}");
+            //Cargar los item de compras en los items de items para guardar vale
+            foreach (var item in ItemsPrograma)
+            {
+                Stock pedido = new Stock();
+                pedido.PEDIDO = item.PEDIDO;
+                pedido.CG_ORDF = item.CG_ORDF;
+                OrdenFabricacion = (int)item.CG_ORDF;
+                //OCompra = (int)item.NUMERO;
+                pedido.CG_PROVE = 0;
+                Cg_CLI_Cg_PROVE = item.CG_CLI;
+                //DescripcionPro = item.des;
+                pedido.CG_ART = item.CG_PROD;
+                pedido.DES_ART = item.DES_PROD;
+                //pedido.UNID = item.un;
+                //pedido.IMPORTE1 = item.PRECIO;
 
+                lStock.Add(pedido);
+            }
+
+            ItemsVale = lStock.ToArray();
+            PermiteAgregarItem = false;
+            PermiteEditarItem = true;
+            PermiteEliminarItem = true;
+        }
         if (tipoEntidad == "Producto")
         {
             selectedProducto = (Producto)obj;
@@ -533,7 +547,7 @@
         ItemsABuscar = null;
         tituloBuscador = "Listado de Clientes";
         ColumnasBuscador = new string[] { "CG_CLI", "DES_CLI" };
-        ItemsABuscar = await Http.GetFromJsonAsync<Producto[]>("api/Productos");
+        ItemsABuscar = await Http.GetFromJsonAsync<Producto[]>("api/Clientes");
         PopupBuscadorVisible = true;
         await InvokeAsync(StateHasChanged);
     }

@@ -28,6 +28,7 @@ namespace PCP.Server
             services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
 
             services.AddControllersWithViews();
+            //services.AddControllers().AddNewtonsoftJson();
             services.AddRazorPages();
         }
 

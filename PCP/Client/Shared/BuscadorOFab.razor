@@ -32,15 +32,15 @@
     [Parameter] public bool HabilitaBotonBusqueda { get; set; } = true;
     [Parameter] public bool MostrarSpin { get; set; } = true;
     [Parameter] public EventCallback<Programa> OnOFSeleccionada { get; set; }
-    private Compra[] ItemsABuscar = null;
-    private string[] ColumnasBuscador = new string[] { "NUMERO", "DES_PROVE" };
+    private Programa[] ItemsABuscar = null;
+    private string[] ColumnasBuscador = new string[] { "CG_ORDF", "FE_EMIT", "CG_PROD", "CANT" };
     private string TituloBuscador = "Listado de Ordenes de Compra";
     private bool PopupBuscadorVisible = false;
 
     private async Task BuscarOF()
     {
         PopupBuscadorVisible = true;
-        ItemsABuscar = await Http.GetFromJsonAsync<Compra[]>("api/Compras");
+        ItemsABuscar = await Http.GetFromJsonAsync<Programa[]>("api/Programas");
         await InvokeAsync(StateHasChanged);
     }
 

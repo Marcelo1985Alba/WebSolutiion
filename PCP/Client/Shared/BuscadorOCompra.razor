@@ -13,8 +13,8 @@
 
         </div>
         <div class="col-2">
-            <DxButton Text="..." RenderStyle="@ButtonRenderStyle.Primary" 
-                        Visible="@MostraBotonBusqueda"
+            <DxButton Text="..." RenderStyle="@ButtonRenderStyle.Danger" 
+                        Visible="false"
                         Enabled="@HabilitaBotonBusqueda" Click="@(async (e)=> await BuscarOCompras())"
                         RenderStyleMode="@ButtonRenderStyleMode.Outline"/>
         </div>
@@ -28,7 +28,7 @@
 
     [Parameter] public decimal Valor { get; set; } = 0;
     [Parameter] public bool EsSoloLectura { get; set; } = false;
-    [Parameter] public bool MostraBotonBusqueda { get; set; } = true;
+    [Parameter] public bool MostraBotonBusqueda { get; set; } = false;
     [Parameter] public bool HabilitaBotonBusqueda { get; set; } = true;
     [Parameter] public bool MostrarSpin { get; set; } = true;
     [Parameter] public EventCallback<Compra> OnOCSeleccionada { get; set; }
@@ -36,7 +36,7 @@
     private string[] ColumnasBuscador = new string[] { "NUMERO", "DES_PROVE" };
     private string TituloBuscador = "Listado de Ordenes de Compra";
     private bool PopupBuscadorVisible = false;
-
+    private ButtonRenderStyle buttonRenderStyle = ButtonRenderStyle.Secondary;
     private async Task BuscarOCompras()
     {
         PopupBuscadorVisible = true;
@@ -51,4 +51,14 @@
         await OnOCSeleccionada.InvokeAsync(oc);
     }
 
+    private ButtonRenderStyle CambiarColorBorde()
+    {
+        if (HabilitaBotonBusqueda)
+        {
+            buttonRenderStyle = ButtonRenderStyle.Danger;
+            return buttonRenderStyle;
+        }
+
+        return buttonRenderStyle;
+    }
 }

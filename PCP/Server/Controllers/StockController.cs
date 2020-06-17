@@ -91,8 +91,10 @@ namespace PCP.Server.Controllers
 
         // PUT: api/Stock/PutStock/123729
         [HttpPut("PutStock/{registro}")]
-        public async Task<ActionResult<string>> PutStock(decimal registro, Stock stock)
+        public async Task<ActionResult<Stock>> PutStock(decimal registro, Stock stock)
         {
+            stock.USUARIO = "USER";
+            stock.CG_CIA = 1;
             if (registro != stock.REGISTRO)
             {
                 return BadRequest("Registro Incorrecto");
@@ -112,18 +114,18 @@ namespace PCP.Server.Controllers
                 }
                 else
                 {
-                    throw;
+                    BadRequest();
                 }
             }
 
-            return Ok(stock.REGISTRO.ToString());
+            return Ok(stock);
         }
 
         //POST: api/Stock
         //To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<string>> PostStock([FromBody] Stock stock)
+        public async Task<ActionResult<Stock>> PostStock([FromBody] Stock stock)
         {
             stock.USUARIO = "USER";
             stock.CG_CIA = 1;
@@ -152,7 +154,7 @@ namespace PCP.Server.Controllers
                 }
                 else
                 {
-                    throw;
+                    return BadRequest();
                 }
             }
 
@@ -160,7 +162,7 @@ namespace PCP.Server.Controllers
             {
                 //var ret = CreatedAtAction(nameof(AbriVale), new { vale = Stock.VALE }, Stock);
                 //return ret;
-                return Ok(stock.REGISTRO.ToString());
+                return Ok(stock);
             }
             catch (Exception ex)
             {

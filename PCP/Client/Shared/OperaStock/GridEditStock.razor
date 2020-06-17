@@ -23,7 +23,7 @@ else
                         <DxDataGridCommandColumn DeleteButtonVisible="PermiteEliminar"
                                                  EditButtonVisible="PermiteEditar"
                                                  NewButtonVisible="PermiteAgregar"
-                                                 Width="100px">
+                                                 Width="90px">
                         </DxDataGridCommandColumn>
                         <DxDataGridColumn Field="@nameof(Stock.CG_ART)" Caption="Cod. Producto"></DxDataGridColumn>
                         <DxDataGridColumn Field="@nameof(Stock.DES_ART)" Caption="Desc. Producto"></DxDataGridColumn>
@@ -33,12 +33,13 @@ else
                         </DxDataGridComboBoxColumn>
                         <DxDataGridColumn Field="@nameof(Stock.STOCKA)" Caption="Stock A"></DxDataGridColumn>
                         <DxDataGridComboBoxColumn Data="@Unidades" Field="@nameof(Stock.UNIDA)"
-                            Caption="Unidad A">
+                                                  Caption="Unidad A">
                         </DxDataGridComboBoxColumn>
-                        @*<DxDataGridColumn Field="@nameof(Stock.IMPORTE1)" Caption="Precio Unit."></DxDataGridColumn>
+                        <DxDataGridColumn Field="@nameof(Stock.IMPORTE1)" Caption="Precio Unit."></DxDataGridColumn>
                         <DxDataGridColumn Field="@nameof(Stock.IMPORTE2)" Caption="Importe2"></DxDataGridColumn>
                         <DxDataGridColumn Field="@nameof(Stock.IMPORTE3)" Caption="Importe3"></DxDataGridColumn>
-                        <DxDataGridColumn Field="@nameof(Stock.IMPORTE4)" Caption="Importe4"></DxDataGridColumn>*@
+                        <DxDataGridColumn Field="@nameof(Stock.IMPORTE4)" Caption="Importe4"></DxDataGridColumn>
+                        <DxDataGridColumn Field="@nameof(Stock.IMPORTE6)" Caption="Importe6"></DxDataGridColumn>
                         <DxDataGridColumn Field="@nameof(Stock.DESPACHO)" Caption="Despacho"></DxDataGridColumn>
                         <DxDataGridColumn Field="@nameof(Stock.SERIE)" Caption="Serie"></DxDataGridColumn>
                         <DxDataGridColumn Field="@nameof(Stock.LOTE)" Caption="Lote"></DxDataGridColumn>
@@ -142,19 +143,14 @@ else
 
 @code {
 
-    [Parameter]
-    public string Titulo { get; set; } = null!;
-    [Parameter]
-    public Stock[] DataSource { get; set; } = null!;
-    [Parameter]
-    public bool PermiteAgregar { get; set; } = false;
-    [Parameter]
-    public bool PermiteEditar { get; set; } = false;
-    [Parameter]
-    public bool PermiteEliminar { get; set; } = false;
+    [Parameter] public string Titulo { get; set; } = null!;
+    [Parameter] public Stock[] DataSource { get; set; } = null!;
+    [Parameter] public bool PermiteAgregar { get; set; } = false;
+    [Parameter] public bool PermiteEditar { get; set; } = false;
+    [Parameter] public bool PermiteEliminar { get; set; } = false;
 
     [Parameter] public EventCallback<Stock> onGuardar { get; set; }
-    [CascadingParameter] public decimal? RegistroGenerado { get; set; }
+    [CascadingParameter] public Stock RegistroGenerado { get; set; }
 
     DxDataGrid<Stock> grid;
     Unidad[] Unidades = new List<Unidad>().ToArray();
@@ -208,6 +204,7 @@ else
             Despacho = DataItem.DESPACHO;
             Serie = DataItem.SERIE;
             Lote = DataItem.LOTE;
+            Importe1 = DataItem.IMPORTE1;
         }
 
         public Stock DataItem { get; set; }
@@ -231,7 +228,7 @@ else
         public string Unidad { get; set; } = "";
         public decimal StockA { get; set; } = 0;
         public string UnidadA { get; set; } = "";
-        public decimal Importe1 { get; set; } = 0;
+        public decimal? Importe1 { get; set; } = 0;
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public decimal Importe2 { get; set; } = 0;
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
@@ -277,7 +274,7 @@ else
         EditContext.DataItem.DESPACHO = EditContext.Despacho;
         EditContext.DataItem.SERIE = EditContext.Serie;
         EditContext.DataItem.LOTE = EditContext.Lote;
-
+        EditContext.DataItem.IMPORTE1 = EditContext.Importe1;
         EditContext.DataItem.CG_CUENT = EditContext.Cuenta;
         EditContext.DataItem.CG_ORDEN = EditContext.Cg_Orden;
 
@@ -293,13 +290,18 @@ else
         try
         {
 
-
+            Console.WriteLine(EditContext.DataItem);
             //envio item stock para guardar en la pantall operarcion 
             //para poder agregarle los datos de la cabecera: vale, ocompra etc
             await onGuardar.InvokeAsync(EditContext.DataItem);
 
             //agregar nuero de registro una vez guardado
-            EditContext.DataItem.REGISTRO = RegistroGenerado;
+            EditContext.DataItem.REGISTRO = RegistroGenerado.REGISTRO;
+            EditContext.DataItem.IMPORTE1 = RegistroGenerado.IMPORTE1;
+            EditContext.DataItem.IMPORTE2 = RegistroGenerado.IMPORTE2;
+            EditContext.DataItem.IMPORTE3 = RegistroGenerado.IMPORTE3;
+            EditContext.DataItem.IMPORTE4 = RegistroGenerado.IMPORTE4;
+            EditContext.DataItem.IMPORTE6 = RegistroGenerado.IMPORTE6;
 
             if (EditContext.IsNewRow)
             {

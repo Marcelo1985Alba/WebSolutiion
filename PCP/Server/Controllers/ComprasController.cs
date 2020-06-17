@@ -28,7 +28,9 @@ namespace PCP.Server.Controllers
         {
             try
             {
-                return await _context.Compras.Where(c=> c.CG_CIA == cg_cia_usuario).ToListAsync();
+                //OC ABIERTAS
+                return await _context.Compras.Where(c=> c.CG_CIA == cg_cia_usuario && c.FE_CIERRE == null)
+                    .ToListAsync();
 
             }
             catch (Exception ex)

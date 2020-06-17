@@ -63,8 +63,8 @@
         <Template>
             <div class="form-row">
                 <div class="col">
-                    <BuscadorOCompra EsSoloLectura="@OCSoloLectura" HabilitaBotonBusqueda="@HabilitaBotonOC"
-                                     MostraBotonBusqueda="true" MostrarSpin="false"
+                    <BuscadorOCompra EsSoloLectura="true" HabilitaBotonBusqueda="@HabilitaBotonOC"
+                                     MostraBotonBusqueda="false" MostrarSpin="false"
                                      Valor="@OCompra" OnOCSeleccionada="onObjectSelected" />
                 </div>
             </div>
@@ -133,7 +133,7 @@
                            OnSelectedDepositoChanged="SelectedDepositoIngresoChanged"/>
         </Template>
     </DxFormLayoutItem>
-    <DxFormLayoutItem Caption="Cliente/Proveedor" ColSpanXl="9" ColSpanMd="6" ColSpanSm="12">
+    <DxFormLayoutItem Caption="Cliente/Proveedor" ColSpanXl="8" ColSpanMd="6" ColSpanSm="12">
         <Template>
             <div class="form-row">
                 <div class="col-3 m-0">
@@ -156,7 +156,7 @@
             </div>
         </Template>
     </DxFormLayoutItem>
-    <DxFormLayoutItem Caption="Remito:" ColSpanLg="3" ColSpanMd="6" ColSpanSm="12">
+    <DxFormLayoutItem Caption="Remito:" ColSpanLg="4" ColSpanMd="6" ColSpanSm="12">
         <Template>
             <div class="form-row">
                 <div class="col">
@@ -172,7 +172,7 @@
     </DxFormLayoutItem>
 </DxFormLayout>
 
-<CascadingValue Value="@RegistroGenerado">
+<CascadingValue Value="@StockGuardado">
     <div class="container-fluid">
         <GridEditStock DataSource="@ItemsVale" PermiteAgregar="@PermiteAgregarItem"
                        PermiteEditar="@PermiteEditarItem" PermiteEliminar="@PermiteEliminarItem"
@@ -183,7 +183,7 @@
                    Columnas="@ColumnasBuscador" onObjetoSeleccionado="onObjectSelected" />
 
 @code {
-    decimal? RegistroGenerado;
+    Stock StockGuardado = new Stock();
     bool DisableCssClass { get => selectedTire == null ? true : false; }
     int NumVale { get; set; }
     bool MostrarAlerta = false;
@@ -198,8 +198,8 @@
     bool PermiteEliminarItem { get; set; } = false;
 
     bool OCSoloLectura = true;
-    bool HabilitaBotonOC = false;
-
+    bool HabilitaBotonOC = true;
+    bool MostrarBotorOC = false;
     bool OFSoloLectura = true;
     bool HabilitaBotonOF = false;
 
@@ -256,7 +256,7 @@
         Depositos = await Http.GetFromJsonAsync<Deposito[]>("api/Depositos");
         selectedDepositoSalida = Depositos[0];
         selectedDepositoIngreso = Depositos[0];
-
+        Remito = "0000-00000000";
         await InvokeAsync(StateHasChanged);
         ItemsVale = new List<Stock>().ToArray();
     }
@@ -278,17 +278,19 @@
         if (selectedTire?.Tipoo == 5)
         {
             HabilitaBotonOC = true;
+            //MostrarBotorOC = true;
             OCSoloLectura = false;
             HabilitaBotonOF = false;
             OFSoloLectura = true;
         }
-        else
-        {
-            HabilitaBotonOC = false;
-            OCSoloLectura = true;
-            HabilitaBotonOF = true;
-            OFSoloLectura = false;
-        }
+        //else
+        //{
+        //    ////MostrarBotorOC = false;
+        //    HabilitaBotonOC = false;
+        //    OCSoloLectura = true;
+        //    HabilitaBotonOF = true;
+        //    OFSoloLectura = false;
+        //}
 
         InvokeAsync(StateHasChanged);
     }
@@ -390,10 +392,10 @@
         stock.CANTPED = 0;
         stock.STOCKA = 0;
         stock.VA_INDIC = 0;
-        stock.IMPORTE1 = 0;
+        //stock.IMPORTE1 = 0; Se obtiene de la orden de compra
         stock.IMPORTE6 = 0;
         HttpResponseMessage response = null;
-        Mensaje = $"Nuevo Vale Nro: {stock.VALE}";
+        Mensaje = $"Vale Nro: {stock.VALE}";
         if (stock.REGISTRO == null)
         {
             response = await Http.PostAsJsonAsync("api/Stock", stock);
@@ -403,7 +405,7 @@
         {
             var registro = stock.REGISTRO;
             response = await Http.PutAsJsonAsync($"api/Stock/PutStock/{registro}", stock);
-            Mensaje += " (Actualizado)";
+            Mensaje += " Actualizado";
         }
 
 
@@ -425,14 +427,14 @@
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 //
-                var mensServidor = await response.Content.ReadAsStringAsync();
+                var mensServidor = await response.Content.ReadFromJsonAsync<Stock>();
                 await InvokeAsync(StateHasChanged);
-                Console.WriteLine($"Registro: {mensServidor}");
-                RegistroGenerado = Decimal.Parse(mensServidor);
+                Console.WriteLine($"Registro: {mensServidor}");//guarda en la consola del chrome para ver los dtos.
+                StockGuardado = mensServidor;
             }
             //No abrir vale al guardar pues se perden los items: await AbrirVale();
+
             MostrarAlerta = true;
-            //Mensaje = $"Vale Nro: {stock.VALE}";
             TipoAlert = TipoAlerta.success;
         }
 
